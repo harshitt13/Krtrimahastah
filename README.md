@@ -90,21 +90,6 @@ Install these via the Arduino Library Manager:
 * `ArduinoJson` (by Benoit Blanchon)
 * `WiFiClientSecure` (Built-in)
 
-### Installation
-1.  **Clone the Repo:**
-    ```bash
-    git clone [https://github.com/yourusername/krtrimahastah-prosthetic.git](https://github.com/yourusername/krtrimahastah-prosthetic.git)
-    ```
-2.  **Configure Credentials:**
-    * Rename `config_template.h` to `config.h`.
-    * Enter your Wi-Fi SSID, Password, and Google API Key.
-3.  **Calibrate Servos:**
-    * Upload `calibration_zero.ino` first.
-    * Attach tendons while servos are electrically locked at 0 degrees.
-4.  **Upload Main Firmware:**
-    * Upload `main_controller.ino` to the ESP32.
-
----
 
 ## ⚠️ Disclaimer
 *This project is a research prototype intended for educational and developmental purposes. It is not a medically certified device.*
