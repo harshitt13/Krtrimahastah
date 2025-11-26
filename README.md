@@ -1,9 +1,5 @@
 # Krtrimahastah: AI-Powered Low-Cost Prosthetic Hand
 
-![Project Status](https://img.shields.io/badge/Status-Prototype_Complete-success)
-![Platform](https://img.shields.io/badge/Platform-ESP32-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
-
 **Krtrimahastah** (Sanskrit for *Artificial Hand*) is an open-source, affordable, and intelligent prosthetic arm designed to bridge the gap between expensive bionic limbs and passive cosmetic devices. 
 
 By leveraging 3D printing, the ESP32 microcontroller, and Cloud AI, this project delivers a functional, multi-modal assistive device for under **$100 USD**.
