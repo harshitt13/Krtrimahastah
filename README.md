@@ -1,7 +1,6 @@
 # 🤖 Krtrimahastah: AI-Powered Low-Cost Prosthetic Hand
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status: Active Development](https://img.shields.io/badge/Status-Active%20Development-brightgreen)]()
 [![Arduino](https://img.shields.io/badge/Platform-Arduino%20ESP32-blue)]()
 
 **Krtrimahastah** (Sanskrit for _Artificial Hand_) is an open-source, affordable, and intelligent prosthetic arm designed to bridge the gap between expensive bionic limbs and passive cosmetic devices.
@@ -228,8 +227,8 @@ stateDiagram-v2
 
 ```mermaid
 sequenceDiagram
-    User->>Alexa: Speak voice command<br/>("Alexa, turn on Fist")
-    Alexa->>SinricPro: Process & forward command
+    User->>Google Assistant: Speak voice command<br/>("Hey Google, turn on Fist")
+    Google Assistant->>SinricPro: Process & forward command
     SinricPro->>ESP32: Send gesture command via WebSocket
     ESP32->>ESP32: Parse mode command<br/>(e.g., "fist", "peace", "point")
     ESP32->>SERVO_CTRL: Calculate target angles
@@ -452,7 +451,7 @@ EMG Signal → Threshold Detection → Debounce (200ms)
 
 - **Activation:** Voice command via Alexa or Google Assistant
 - **Processing Pipeline:**
-  1. User speaks to Alexa: "Alexa, turn on Fist" or "Alexa, set hand to Peace mode"
+  1. User speaks to Google Assistant: "Hey Google, turn on Fist" or "Hey Google, set hand to Peace mode"
   2. SinricPro cloud processes command via WebSocket
   3. ESP32 receives gesture mode string (e.g., "fist", "peace", "point")
   4. Execute corresponding servo movement pattern
@@ -505,7 +504,7 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
 ### **SinricPro Setup**
 
 1. Create a free account at [https://sinric.pro](https://sinric.pro)
-2. Create a new **Smart Home Device** → Select "Switch" type
+2. Create a new **Smart Home Device** → Select "Custom" type
 3. Note your credentials:
    - **APP_KEY** - Found in "Credentials" section
    - **APP_SECRET** - Found in "Credentials" section
@@ -552,11 +551,11 @@ cd Krtrimahastah
 Edit [firmware/prosthetic_hand_improved.ino](firmware/prosthetic_hand_improved.ino) and update:
 
 ```cpp
-#define WIFI_SSID         "Your_Wi-Fi_Network_Name"
+#define WIFI_SSID         "Your_Wi-Fi_SSID"
 #define WIFI_PASS         "Your_Wi-Fi_Password"
 
-#define APP_KEY           "YOUR_SINRIC_APP_KEY"      // From SinricPro Dashboard
-#define APP_SECRET        "YOUR_SINRIC_APP_SECRET"  // From SinricPro Dashboard
+#define APP_KEY           "YOUR_APP_KEY"      // From SinricPro Dashboard
+#define APP_SECRET        "YOUR_APP_SECRET"  // From SinricPro Dashboard
 #define DEVICE_ID         "YOUR_DEVICE_ID"          // From your SinricPro device
 ```
 
@@ -568,8 +567,8 @@ Edit [firmware/prosthetic_hand_improved.ino](firmware/prosthetic_hand_improved.i
 3. Open Serial Monitor (Tools → Serial Monitor, 115200 baud)
 4. Press Reset button on ESP32
 5. Observe startup messages and Wi-Fi connection
-6. Say "Alexa, discover devices" to find your prosthetic hand
-7. Test voice commands: "Alexa, turn on Fist"
+6. Say "Hey Google, discover devices" to find your prosthetic hand
+7. Test voice commands: "Hey Google, turn on Fist"
 8. Test EMG mode by flexing muscles
 9. Verify all 5 fingers move smoothly
 ```
@@ -600,40 +599,40 @@ Servo Angle Tuning:
 ### **Voice Control (via Alexa/Google Assistant)**
 
 ```
-1. Say "Alexa, turn on Fist" or "Alexa, set hand to Peace mode"
+1. Say "Hey Google, turn on Fist" or "Hey Google, set hand to Peace mode"
 2. SinricPro processes command and sends to ESP32
 3. Hand executes the gesture smoothly
 4. Stays in gesture until new command or EMG override
 
-Supported Alexa Commands:
+Supported Hey Google Commands:
 
 Functional Gestures:
-├─ "Alexa, turn on Fist" or "Grab" or "Close"  → Full grip
-├─ "Alexa, set mode to Hook"                   → Hook grip (all fingers except thumb)
-├─ "Alexa, set mode to Pinch"                  → Precision pinch (thumb + index/middle)
-├─ "Alexa, set mode to Tripod"                 → Tripod grip (3 fingers)
+├─ "Hey Google, turn on Fist" or "Grab" or "Close"  → Full grip
+├─ "Hey Google, set mode to Hook"                   → Hook grip (all fingers except thumb)
+├─ "Hey Google, set mode to Pinch"                  → Precision pinch (thumb + index/middle)
+├─ "Hey Google, set mode to Tripod"                 → Tripod grip (3 fingers)
 
 Social Gestures:
-├─ "Alexa, turn on Open" or "Five" or "Paper"  → All fingers extended
-├─ "Alexa, set mode to Point" or "One"         → Index finger pointing
-├─ "Alexa, set mode to Peace" or "Two"         → Peace sign (index + middle)
-├─ "Alexa, set mode to Three"                  → Three fingers up
-├─ "Alexa, set mode to Four"                   → Four fingers up
-├─ "Alexa, set mode to Thumbs Up" or "Like"    → Thumbs up gesture
-├─ "Alexa, set mode to OK"                     → OK sign (thumb + index circle)
-├─ "Alexa, set mode to Love"                   → ILY sign (index + pinky)
-├─ "Alexa, set mode to Gun"                    → Finger gun
-├─ "Alexa, set mode to Rock and Roll"          → Rock hand sign
-├─ "Alexa, set mode to Call"                   → Call me gesture
-├─ "Alexa, set mode to Pinky"                  → Pinky promise
+├─ "Hey Google, turn on Open" or "Five" or "Paper"  → All fingers extended
+├─ "Hey Google, set mode to Point" or "One"         → Index finger pointing
+├─ "Hey Google, set mode to Peace" or "Two"         → Peace sign (index + middle)
+├─ "Hey Google, set mode to Three"                  → Three fingers up
+├─ "Hey Google, set mode to Four"                   → Four fingers up
+├─ "Hey Google, set mode to Thumbs Up" or "Like"    → Thumbs up gesture
+├─ "Hey Google, set mode to OK"                     → OK sign (thumb + index circle)
+├─ "Hey Google, set mode to Love"                   → ILY sign (index + pinky)
+├─ "Hey Google, set mode to Gun"                    → Finger gun
+├─ "Hey Google, set mode to Rock and Roll"          → Rock hand sign
+├─ "Hey Google, set mode to Call"                   → Call me gesture
+├─ "Hey Google, set mode to Pinky"                  → Pinky promise
 
 Animations:
-├─ "Alexa, set mode to I Love You"             → I-L-Y animation sequence
-└─ "Alexa, set mode to Rock Paper Scissors"    → Random RPS choice
+├─ "Hey Google, set mode to I Love You"             → I-L-Y animation sequence
+└─ "Hey Google, set mode to Rock Paper Scissors"    → Random RPS choice
 
 Control:
-├─ "Alexa, turn on Hand"                       → Enable EMG control
-└─ "Alexa, turn off Hand"                      → Disable EMG control
+├─ "Hey Google, turn on Hand"                       → Enable EMG control
+└─ "Hey Google, turn off Hand"                      → Disable EMG control
 ```
 
 ### **EMG Control**
@@ -642,9 +641,8 @@ Control:
 1. Ensure EMG sensor strap is worn around forearm
 2. Relax arm at rest
 3. Flex muscle briefly (1-2 second contraction)
-4. Listen for confirmation beep
-5. Hand gesture toggles (Open ↔ Close)
-6. No voice required; works offline
+4. Hand gesture toggles (Open ↔ Close)
+5. No voice required; works offline
 
 Gesture Sequence:
 ├─ Open → Flex → Close (1.5s animation)
@@ -661,7 +659,7 @@ Safety is automatic via FSR sensors:
 → All fingers open slowly to safe position
 
 Manual Reset:
-→ Send "Open" command via Alexa
+→ Send "Open" command via Hey Google
 → Or use EMG sensor to toggle open
 ```
 
@@ -675,64 +673,29 @@ Krtrimahastah/
 ├── LICENSE                                      # MIT License
 │
 ├── firmware/
-│   └── prosthetic_hand_improved.ino            # Main ESP32 firmware (682 lines)
+│   └── src.ino            # Main ESP32 firmware (682 lines)
 │
-├── hardware/
-│   ├── 3d-models/
-│   │   ├── Hand Layout.stl                     # Full assembly reference
-│   │   ├── Hand.stl                            # Palm structure
-│   │   ├── Finger_Thumb.stl                    # Thumb digit
-│   │   ├── Finger_Index.stl                    # Index finger
-│   │   ├── Finger_Middle.stl                   # Middle finger
-│   │   ├── Finger_Ring.stl                     # Ring finger
-│   │   ├── Finger_Pinky.stl                    # Pinky finger
-│   │   ├── Arm_Cover.stl                       # Forearm enclosure
-│   │   ├── Hand_print_layout.stl               # Print nesting guide
-│   │   └── Right_Hand.stl                      # Mirror version
-│   │
-│   ├── schematics/
-│   │   └── Prosthetci Hand Schematic.png       # Circuit diagram
-│   │
-│   └── wiring/
-│       └── Wire Mapping for the Development of a Low-Cost Prosthetic Hand (1).xlsx
-│           # Detailed pinout & connection matrix
-│
-└── documentation/
-    ├── ASSEMBLY.md                             # Step-by-step assembly guide
-    ├── TROUBLESHOOTING.md                      # Common issues & solutions
-    └── API_INTEGRATION.md                      # Google Cloud API setup
+└── hardware/
+    ├── 3d-models/
+    │   ├── Hand Layout.stl                     # Full assembly reference
+    │   ├── Hand.stl                            # Palm structure
+    │   ├── Finger_Thumb.stl                    # Thumb digit
+    │   ├── Finger_Index.stl                    # Index finger
+    │   ├── Finger_Middle.stl                   # Middle finger
+    │   ├── Finger_Ring.stl                     # Ring finger
+    │   ├── Finger_Pinky.stl                    # Pinky finger
+    │   ├── Arm_Cover.stl                       # Forearm enclosure
+    │   ├── Hand_print_layout.stl               # Print nesting guide
+    │   └── Right_Hand.stl                      # Mirror version
+    │
+    ├── schematics/
+    │   └── Prosthetci Hand Schematic.png       # Circuit diagram
+    │
+    └── wiring/
+        └── Wire Mapping for the Development of a Low-Cost Prosthetic Hand.xlsx
+            # Detailed pinout & connection matrix
+
 ```
-
----
-
-## 🔧 Troubleshooting
-
-### **Common Issues & Solutions**
-
-| Issue                             | Cause                     | Solution                                             |
-| :-------------------------------- | :------------------------ | :--------------------------------------------------- |
-| **Servos not moving**             | Incorrect GPIO pins       | Verify pinout in firmware matches hardware wiring    |
-| **Wi-Fi connection fails**        | Wrong credentials         | Update SSID/password in firmware config section      |
-| **Voice commands not recognized** | Poor microphone placement | Position mic away from servo noise; clean I2S lines  |
-| **Crushing grip**                 | FSR threshold too high    | Lower FSR_LIMIT value in firmware; recalibrate       |
-| **EMG sensor noise**              | Poor electrode contact    | Clean arm skin; reposition electrodes; dampen cable  |
-| **Servo jitter**                  | Power supply noise        | Use separate 5V rail for servos; add 100µF capacitor |
-| **Hand won't open after grip**    | Watchdog triggered        | Check serial monitor; reset ESP32 or adjust timeout  |
-
----
-
-## 📦 Dependencies & Compatibility
-
-| Dependency         |       Version        | Status       |
-| :----------------- | :------------------: | :----------- |
-| Arduino IDE        |       1.8.19+        | ✅ Supported |
-| ESP32 Board        | Arduino-ESP32 2.0.0+ | ✅ Supported |
-| ESP32Servo Library |        0.9.0+        | ✅ Required  |
-| SinricPro Library  |       2.10.0+        | ✅ Required  |
-| WebSockets Library |        2.3.0+        | ✅ Required  |
-| ArduinoJson        |       6.18.0+        | ✅ Required  |
-| MG90s Servo        |       Original       | ✅ Required  |
-| Alexa/Google Home  |         Any          | ✅ Required  |
 
 ---
 
@@ -741,27 +704,7 @@ Krtrimahastah/
 - **ESP32 Documentation:** [https://docs.espressif.com/projects/esp-idf/](https://docs.espressif.com/projects/esp-idf/)
 - **SinricPro Documentation:** [https://sinricpro.github.io/esp8266-esp32-sdk/](https://sinricpro.github.io/esp8266-esp32-sdk/)
 - **Servo Motor Control:** [https://randomnerdtutorials.com/esp32-servo-motor/](https://randomnerdtutorials.com/esp32-servo-motor/)
-- **Alexa Smart Home Skills:** [https://developer.amazon.com/alexa/smart-home](https://developer.amazon.com/alexa/smart-home)
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these guidelines:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/YourFeature`)
-3. **Commit** changes with clear messages
-4. **Push** to your fork and **create a Pull Request**
-5. **Describe** changes, issues fixed, and testing performed
-
-### **Contribution Areas**
-
-- Firmware improvements (efficiency, new gestures)
-- 3D model enhancements (comfort, durability)
-- Additional sensor integration (temperature, humidity)
-- Documentation & tutorials
-- Cost optimizations
+- **Myoware Muscle Sensor User-Manual** [https://robu.in/wp-content/uploads/2019/02/Muscle-Sensor-v3-Users-Manual.pdf/](https://robu.in/wp-content/uploads/2019/02/Muscle-Sensor-v3-Users-Manual.pdf)
 
 ---
 
@@ -793,52 +736,11 @@ The author and contributors assume **NO LIABILITY** for injuries, property damag
 
 ---
 
-## 👨‍💻 Authors & Credits
-
-**Project Lead:** Harshit Kushwaha ([@harshitt13](https://github.com/harshitt13))
-
-**Contributors:**
-
-- Open-source community members
-- Arduino & ESP32 framework developers
-- 3D printing & robotics enthusiasts
-
----
-
 ## 📞 Contact & Support
 
 - **GitHub Issues:** [Report bugs or request features](https://github.com/harshitt13/Krtrimahastah/issues)
-- **Email:** (Contact info if available)
-- **Project Demo:** [https://youtu.be/BNZyQIecj14](https://youtu.be/BNZyQIecj14)
+- **Email:** find.harshitkushwaha@gmail.com
 
 ---
-
-## 📈 Project Status
-
-| Aspect             | Status           |
-| :----------------- | :--------------- |
-| Core Functionality | ✅ Complete      |
-| Voice Control      | ✅ Implemented   |
-| EMG Control        | ✅ Implemented   |
-| Haptic Feedback    | ✅ Implemented   |
-| Power Management   | ✅ Optimized     |
-| Documentation      | ✅ Comprehensive |
-| Testing            | 🔄 Ongoing       |
-| Certification      | ⏳ Planned       |
-
----
-
-## 🙏 Acknowledgments
-
-- **Arduino Community** for excellent microcontroller support
-- **Google Cloud** for accessible AI/ML APIs
-- **Thingiverse** community for 3D printing inspiration
-- **Open-source enthusiasts** who believe in accessible technology
-
----
-
-**Last Updated:** February 1, 2026  
-**Repository:** [github.com/harshitt13/Krtrimahastah](https://github.com/harshitt13/Krtrimahastah)  
-**License:** MIT
 
 _Making prosthetics affordable, intelligent, and accessible to all._ 🤖
