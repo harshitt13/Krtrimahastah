@@ -16,8 +16,8 @@
 
 // ---------- PINS ----------
 #define PIN_EMG           34
-#define PIN_FSR_THUMB     32
-#define PIN_FSR_INDEX     33
+#define PIN_FSR_THUMB     36
+#define PIN_FSR_INDEX     39
 
 #define SERVO_THUMB       13
 #define SERVO_INDEX       12
@@ -261,7 +261,7 @@ void poseScissors()  { setTargetPosition(MAX_TP, 0, 0, MAX_OTHERS, MAX_TP); }
 
 // Functional gestures
 void poseHook()      { setTargetPosition(0, 150, 150, 150, 150); }
-void posePinch()     { setTargetPosition(MAX_TP, 140, MAX_OTHERS, MAX_OTHERS, MAX_OTHERS); }
+void posePinch()     { setTargetPosition(MAX_TP, 140, MAX_OTHERS, MAX_OTHERS, MAX_TP); }
 void poseTripod()    { setTargetPosition(100, 120, 120, MAX_OTHERS, MAX_TP); }
 
 // Social gestures
@@ -269,13 +269,13 @@ void posePoint()     { setTargetPosition(MAX_TP, 0, MAX_OTHERS, MAX_OTHERS, MAX_
 void poseMiddle()    { setTargetPosition(MAX_TP, MAX_OTHERS, 0, MAX_OTHERS, MAX_TP); }
 void posePeace()     { setTargetPosition(MAX_TP, 0, 0, MAX_OTHERS, MAX_TP); }
 void poseGun()       { setTargetPosition(0, 0, MAX_OTHERS, MAX_OTHERS, MAX_TP); }
-void poseRockNRoll() { setTargetPosition(MAX_TP, 0, MAX_OTHERS, MAX_OTHERS, 0); }
+void poseRockNRoll() { setTargetPosition(0, 0, MAX_OTHERS, MAX_OTHERS, 0); }
 void poseCall()      { setTargetPosition(0, MAX_OTHERS, MAX_OTHERS, MAX_OTHERS, 0); }
 void poseThumbsUp()  { setTargetPosition(0, MAX_OTHERS, MAX_OTHERS, MAX_OTHERS, MAX_TP); }
 void poseOK()        { setTargetPosition(120, 140, 0, 0, 0); }
 void poseLove()      { setTargetPosition(0, 0, MAX_OTHERS, MAX_OTHERS, 0); }
 void poseThree()     { setTargetPosition(MAX_TP, 0, 0, 0, MAX_TP); }
-void poseFour()      { setTargetPosition(MAX_TP, MAX_OTHERS, MAX_OTHERS, MAX_OTHERS, 0); }
+void posePinky()     { setTargetPosition(MAX_TP, MAX_OTHERS, MAX_OTHERS, MAX_OTHERS, 0); }
 
 // ILY animation poses
 void pose_I() { setTargetPosition(120, 175, 175, 175, 0); }
@@ -499,7 +499,10 @@ bool onSetMode(const String&, const String&, String& mode) {
   else if (mode == "love") {
     poseLove();
   }
-  else if (mode == "pinky" || mode == "four") {
+  else if (mode == "pinky") {
+    posePinky();
+  }
+    else if (mode == "four") {
     poseFour();
   }
   else if (mode == "three") {
