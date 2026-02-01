@@ -146,18 +146,19 @@ graph TB
         EMG["💪 EMG Sensor<br/>Muscle Signals"]
         FSR["🖐️ FSR Sensors<br/>Tactile Feedback"]
     end
-
+    
     subgraph "Processing Layer"
         ESP32["⚙️ ESP32 DevKit<br/>Main Microcontroller<br/>Dual-Core 240MHz"]
         WIFI["📡 Wi-Fi Module<br/>802.11 b/g/n"]
         SINRIC["☁️ SinricPro<br/>IoT Cloud Service"]
-
+    end
+    
     subgraph "Control Logic"
         FSM["🔄 State Machine<br/>5 Operating Modes"]
         SERVO_CTRL["🎮 Servo Controller<br/>PWM Generator"]
         SAFETY["🔒 Safety Module<br/>Watchdog & Limits"]
     end
-
+    
     subgraph "Output Layer"
         THUMB["👍 Thumb Servo<br/>GPIO 13"]
         INDEX["☝️ Index Servo<br/>GPIO 12"]
@@ -165,13 +166,13 @@ graph TB
         RING["💍 Ring Servo<br/>GPIO 27"]
         PINKY["🤙 Pinky Servo<br/>GPIO 26"]
     end
-
+    
     subgraph "Power Distribution"
         BATTERY["🔋 Xiaomi Power Bank<br/>20000mAh"]
         SERVO_RAIL["⚡ Servo Rail (5V)<br/>High Current"]
         LOGIC_RAIL["⚡ Logic Rail (3.3V)<br/>Low Noise"]
     end
-
+    
     VOICE --> SINRIC
     EMG --> ESP32
     FSR --> ESP32
