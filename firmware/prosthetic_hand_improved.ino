@@ -6,13 +6,13 @@
 
 /* ================= USER CONFIG ================= */
 
-#define WIFI_SSID         "YOUR_WIFI_NAME"
-#define WIFI_PASS         "YOUR_WIFI_PASSWORD"
-#define APP_KEY           "YOUR_APP_KEY"
-#define APP_SECRET        "YOUR_APP_SECRET"
+#define WIFI_SSID         "YourWIFISSID"
+#define WIFI_PASS         "YourWIFIPass"
 
-#define HAND_DEVICE_ID    "YOUR_HAND_DEVICE_ID"
-#define MUSCLE_SWITCH_ID  "YOUR_MUSCLE_SWITCH_ID"
+#define APP_KEY           "YourAppKey"
+#define APP_SECRET        "YourAppSecret"
+#define DEVICE_ID         "YourDeviceID"
+
 
 // ---------- PINS ----------
 #define PIN_EMG           34
@@ -275,6 +275,7 @@ void poseThumbsUp()  { setTargetPosition(0, MAX_OTHERS, MAX_OTHERS, MAX_OTHERS, 
 void poseOK()        { setTargetPosition(120, 140, 0, 0, 0); }
 void poseLove()      { setTargetPosition(0, 0, MAX_OTHERS, MAX_OTHERS, 0); }
 void poseThree()     { setTargetPosition(MAX_TP, 0, 0, 0, MAX_TP); }
+void poseFour()      { setTargetPosition(MAX_TP, 0, 0, 0, 0); }
 void posePinky()     { setTargetPosition(MAX_TP, MAX_OTHERS, MAX_OTHERS, MAX_OTHERS, 0); }
 
 // ILY animation poses
@@ -588,12 +589,11 @@ void setup() {
     Serial.println(WiFi.localIP());
     
     // Initialize SinricPro
-    SinricProDevice &hand = SinricPro[HAND_DEVICE_ID];
+    SinricProDevice &hand = SinricPro[DEVICE_ID];
+
+    hand.onPowerState(onPowerState);
     hand.onSetMode("handGesture", onSetMode);
-    
-    SinricProSwitch &muscle = SinricPro[MUSCLE_SWITCH_ID];
-    muscle.onPowerState(onPowerState);
-    
+
     SinricPro.begin(APP_KEY, APP_SECRET);
     Serial.println("SinricPro initialized");
   } else {

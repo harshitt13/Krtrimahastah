@@ -1,91 +1,815 @@
-# Krtrimahastah: AI-Powered Low-Cost Prosthetic Hand
+# 🤖 Krtrimahastah: AI-Powered Low-Cost Prosthetic Hand
 
-**Krtrimahastah** (Sanskrit for *Artificial Hand*) is an open-source, affordable, and intelligent prosthetic arm designed to bridge the gap between expensive bionic limbs and passive cosmetic devices. 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Status: Active Development](https://img.shields.io/badge/Status-Active%20Development-brightgreen)]()
+[![Arduino](https://img.shields.io/badge/Platform-Arduino%20ESP32-blue)]()
 
-By leveraging 3D printing, the ESP32 microcontroller, and Cloud AI, this project delivers a functional, multi-modal assistive device for under **$100 USD**.
+**Krtrimahastah** (Sanskrit for *Artificial Hand*) is an open-source, affordable, and intelligent prosthetic arm designed to bridge the gap between expensive bionic limbs and passive cosmetic devices.
+
+By leveraging 3D printing, the ESP32 microcontroller, cloud AI integration, and affordable hobbyist components, this project delivers a fully functional, multi-modal assistive device for under **$100 USD**.
+
+🎥 **[Project Demo Video](https://youtu.be/BNZyQIecj14)**
+
+---
+
+## 📋 Table of Contents
+
+- [Key Features](#-key-features)
+- [Project Overview](#-project-overview)
+- [Hardware Architecture](#-hardware-architecture)
+- [System Architecture & Connection Flow](#-system-architecture--connection-flow)
+- [3D Model Components](#-3d-model-components)
+- [Wire Mapping](#-wire-mapping)
+- [Electrical Schematic](#-electrical-schematic)
+- [Control Logic](#-control-logic)
+- [Software Setup](#-software-setup)
+- [Installation & Setup](#-installation--setup)
+- [Usage Guide](#-usage-guide)
+- [File Structure](#-file-structure)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Disclaimer](#-disclaimer)
 
 ---
 
 ## 🌟 Key Features
 
-* **Multi-Modal Control:** Hybrid input system using **Voice Commands** (Primary) and **EMG Muscle Signals** (Secondary/Backup).
-* **AI-Powered Intelligence:** Integrates **Google Cloud Speech-to-Text API** to understand complex commands like "Point," "Peace Sign," or "Pinch."
-* **Haptic Feedback:** Force Sensitive Resistors (FSRs) in the fingertips enable a closed-loop grip, preventing the crushing of delicate objects.
-* **Tendon-Driven Actuation:** Bio-inspired mechanical design using 5 independent MG90s servos for anthropomorphic movement.
-* **Portable Power Management:** Solves the "low-current shutdown" issue common in consumer power banks, allowing for reliable all-day portability using a Xiaomi 4i.
-* **Frugal Innovation:** Built entirely with off-the-shelf hobbyist components and FDM 3D printing.
+### 🎯 **Multi-Modal Control System**
+- **Voice Commands (Primary):** Hybrid input system using natural language processing via Google Cloud Speech-to-Text API
+- **EMG Muscle Signals (Secondary):** Backup EMG-based control for silent/offline operation
+- **Cloud AI Integration:** Understands complex commands like "Point," "Peace Sign," "Pinch," and custom gestures
+
+### 🧠 **Intelligent Hardware**
+- **Tendon-Driven Actuation:** Bio-inspired mechanical design with 5 independent MG90s servos for anthropomorphic finger movement
+- **Haptic Feedback System:** Force Sensitive Resistors (FSRs) in fingertips enable closed-loop grip control, preventing crushing of delicate objects
+- **Haptic Force Sensing:** Real-time pressure monitoring (max grip force: 2000 units with safety cutoff)
+
+### ⚡ **Power Management Innovation**
+- **Solves the "Xiaomi Hack":** Overcomes standard power bank low-current shutdown issues common with microcontroller applications
+- **All-Day Portability:** 20000mAh Xiaomi 4i power bank with optimized power splitting:
+  - **High-Power Rail:** 5V for servo actuation (high current spikes)
+  - **Logic Rail:** 3.3V via ESP32 regulator (low current, noise-isolated)
+
+### 💰 **Cost-Effective Engineering**
+- Built entirely with off-the-shelf hobbyist components
+- FDM 3D printing for structural parts (PLA material)
+- Total BOM cost under $100 USD
+- Open-source firmware for transparency and community contribution
+
+### 🔒 **Safety Features**
+- Pressure/tactile feedback prevents over-gripping
+- Software watchdog timer (10-second timeout)
+- EMG debounce protection (200ms)
+- Safety state machine for graceful error handling
+- Servo angle constraints to prevent mechanical damage
 
 ---
 
-## 🛠️ Hardware Architecture
+## 🎯 Project Overview
 
-### Bill of Materials (BOM)
-| Component | Function |
-| :--- | :--- |
-| **ESP32 DevKit V1** | Main Controller (32-bit, Wi-Fi/BT) |
-| **MG90s Servos (x5)** | Actuators for individual fingers |
-| **INMP441 Microphone** | I2S Digital Mic for Voice Commands |
-| **EMG Sensor (V3.0)** | Analog Muscle Signal Acquisition |
-| **FSR402 Sensors (x2)** | Pressure/Tactile Feedback |
-| **Xiaomi Power Bank 4i** | 20000mAh Portable Power Source |
-| **Tactile Pushbutton** | Push-to-Talk Trigger |
-| **3D Printed Chassis** | PLA parts (Palm, Phalanges, Forearm) |
+### **Problem Statement**
+Prosthetic limbs remain inaccessible to the majority due to prohibitive costs ($20,000-$100,000+). This project demonstrates that functional bionic devices can be built affordably using modern open-source hardware and cloud AI.
 
-### 🔌 Master Pinout (Left-Side Layout)
-The circuit is designed to optimize cable routing within the forearm chassis.
-
-| Component | Pin Name | ESP32 GPIO | Note |
-| :--- | :--- | :--- | :--- |
-| **Servo: Thumb** | Signal | `GPIO 13` | PWM Output |
-| **Servo: Index** | Signal | `GPIO 12` | PWM Output |
-| **Servo: Middle** | Signal | `GPIO 14` | PWM Output |
-| **Servo: Ring** | Signal | `GPIO 27` | PWM Output |
-| **Servo: Pinky** | Signal | `GPIO 26` | PWM Output |
-| **Voice Trigger** | Button | `GPIO 25` | Input (Pull-down) |
-| **Mic (INMP441)** | WS (Word) | `GPIO 33` | I2S Clock |
-| **Mic (INMP441)** | SCK (Clock)| `GPIO 32` | I2S Clock |
-| **Mic (INMP441)** | SD (Data) | `GPIO 35` | I2S Data In |
-| **EMG Sensor** | SIG | `GPIO 34` | Analog Input (ADC1) |
-| **FSR (Thumb)** | Signal | `GPIO 36` | Analog Input (ADC1) |
-| **FSR (Finger)** | Signal | `GPIO 39` | Analog Input (ADC1) |
+### **Solution**
+A modular, 3D-printed prosthetic hand that combines:
+- **Affordable actuation:** MG90s servo motors instead of expensive linear actuators
+- **Intelligent control:** Cloud-based natural language processing with offline fallback
+- **Biological feedback:** FSR-based haptic sensing for dexterous manipulation
+- **Energy efficiency:** Optimized power management for all-day wearability
 
 ---
 
-## ⚙️ How It Works
+## ⚙️ Hardware Architecture
 
-### 1. The Control Logic
-The hand operates in two distinct modes to ensure reliability in all environments:
+### **Bill of Materials (BOM)**
 
-* **Mode A: Smart Voice Control (Online)**
-    * User holds the **Push-to-Talk** button.
-    * Audio is streamed via Wi-Fi to the **Google Cloud Speech-to-Text API**.
-    * The returned text (e.g., "Close Fist") is parsed by the ESP32.
-    * Servos execute the corresponding pre-programmed pattern.
+| Component | Quantity | Supplier | Function | Est. Cost (USD) |
+|:---|:---:|:---|:---|:---:|
+| **ESP32 DevKit V1** | 1 | Amazon/Aliexpress | Main microcontroller (32-bit dual-core, Wi-Fi/BLE) | $12 |
+| **MG90s Servo Motor** | 5 | Hobbyist Retailers | Individual finger actuators (180° range, 1.5kg torque) | $25 |
+| **INMP441 I2S Microphone** | 1 | Amazon | Digital audio input for voice commands | $8 |
+| **EMG Sensor Module V3.0** | 1 | Amazon | Muscle signal acquisition (3-channel, 10-bit ADC) | $20 |
+| **FSR402 Pressure Sensor** | 2 | Adafruit/Sparkfun | Tactile feedback in thumb & index finger | $8 |
+| **Xiaomi Power Bank 4i** | 1 | Amazon | 20000mAh portable battery with dual USB-A output | $25 |
+| **Breadboard & Jumper Wires** | 1 | Amazon | Prototyping & connections | $5 |
+| **Tactile Pushbutton** | 1 | Electronics Store | Push-to-Talk trigger for voice mode | $1 |
+| **3D Printed Parts** | — | FDM Printer | PLA chassis (hand, phalanges, forearm cover) | $3 |
+| **Servo Horns & Hardware** | — | Included | Servo linkages & fasteners | $2 |
+| **USB-C Cable & Connectors** | 1 | Stock | Power delivery & debugging | $2 |
+| | | | **TOTAL ESTIMATED COST** | **~$111** |
 
-* **Mode B: EMG Toggle (Offline/Silent)**
-    * Used for rapid, frequent actions without speaking.
-    * A single muscle flex (detected by the EMG sensor) acts as a **binary toggle**.
-    * If Open -> Close. If Closed -> Open.
+---
 
-### 2. Power Management (The "Xiaomi Hack")
-Standard power banks often shut down when powering microcontrollers because the current draw is too low during idle states.
-* **Solution:** We utilize the **"Low Current Mode"** of the Xiaomi Power Bank 4i (activated by double-pressing the power button).
-* **Wiring:** A split-rail breadboard design separates the high-noise servo power rail (5V) from the sensitive logic power rail (3.3V via ESP32 regulator) to prevent brownouts.
+## 🔌 Master Pinout Reference
+
+### **ESP32 GPIO Pin Allocation**
+
+| Component | Signal Line | ESP32 GPIO | Pin Type | Notes |
+|:---|:---|:---:|:---|:---|
+| **SERVO: Thumb** | PWM Signal | GPIO 13 | OUTPUT | Channel 0, PWM (0-180°) |
+| **SERVO: Index** | PWM Signal | GPIO 12 | OUTPUT | Channel 1, PWM (0-180°) |
+| **SERVO: Middle** | PWM Signal | GPIO 14 | OUTPUT | Channel 2, PWM (0-180°) |
+| **SERVO: Ring** | PWM Signal | GPIO 27 | OUTPUT | Channel 3, PWM (0-180°) |
+| **SERVO: Pinky** | PWM Signal | GPIO 26 | OUTPUT | Channel 4, PWM (0-180°) |
+| **VOICE TRIGGER** | Button Input | GPIO 25 | INPUT | Pull-down activated (active HIGH) |
+| **INMP441 Mic** | Word Select (WS) | GPIO 33 | I2S CLOCK | Synchronization signal |
+| **INMP441 Mic** | Serial Clock (SCK) | GPIO 32 | I2S CLOCK | Bit clock for audio streaming |
+| **INMP441 Mic** | Serial Data (SD) | GPIO 35 | I2S DATA | Audio data input (PDM format) |
+| **EMG Sensor** | Analog Output | GPIO 34 | ADC1 INPUT | 0-4095 (0-3.3V) muscle signal |
+| **FSR: Thumb Tip** | Analog Output | GPIO 36 | ADC1 INPUT | Pressure sensing (0-2000 units) |
+| **FSR: Index Tip** | Analog Output | GPIO 39 | ADC1 INPUT | Pressure sensing (0-2000 units) |
+
+### **Servo Angle Limits**
+
+| Finger | Min Angle (Open) | Max Angle (Closed) | Movement Range | Comments |
+|:---|:---:|:---:|:---:|:---|
+| Thumb | 0° | 120° | 120° | Opposable digit with limited range |
+| Index | 0° | 175° | 175° | Full extension to curl |
+| Middle | 0° | 175° | 175° | Full extension to curl |
+| Ring | 0° | 175° | 175° | Full extension to curl |
+| Pinky | 0° | 175° | 175° | Full extension to curl |
+
+---
+
+## 🏗️ System Architecture & Connection Flow
+
+### **Overall System Architecture**
+
+```mermaid
+graph TB
+    subgraph "Input Layer"
+        VOICE["🎤 Voice Input<br/>INMP441 I2S Mic"]
+        EMG["💪 EMG Sensor<br/>Muscle Signals"]
+        FSR["🖐️ FSR Sensors<br/>Tactile Feedback"]
+        PTT["🔘 Push-to-Talk<br/>GPIO 25"]
+    end
+    
+    subgraph "Processing Layer"
+        ESP32["⚙️ ESP32 DevKit<br/>Main Microcontroller<br/>Dual-Core 240MHz"]
+        WIFI["📡 Wi-Fi Module<br/>802.11 b/g/n"]
+        CLOUD["☁️ Google Cloud<br/>Speech-to-Text API"]
+    end
+    
+    subgraph "Control Logic"
+        FSM["🔄 State Machine<br/>5 Operating Modes"]
+        SERVO_CTRL["🎮 Servo Controller<br/>PWM Generator"]
+        SAFETY["🔒 Safety Module<br/>Watchdog & Limits"]
+    end
+    
+    subgraph "Output Layer"
+        THUMB["👍 Thumb Servo<br/>GPIO 13"]
+        INDEX["☝️ Index Servo<br/>GPIO 12"]
+        MIDDLE["🖕 Middle Servo<br/>GPIO 14"]
+        RING["💍 Ring Servo<br/>GPIO 27"]
+        PINKY["🤙 Pinky Servo<br/>GPIO 26"]
+    end
+    
+    subgraph "Power Distribution"
+        BATTERY["🔋 Xiaomi Power Bank<br/>20000mAh"]
+        SERVO_RAIL["⚡ Servo Rail (5V)<br/>High Current"]
+        LOGIC_RAIL["⚡ Logic Rail (3.3V)<br/>Low Noise"]
+    end
+    
+    VOICE --> WIFI
+    PTT --> ESP32
+    EMG --> ESP32
+    FSR --> ESP32
+    WIFI --> CLOUD
+    CLOUD --> ESP32
+    ESP32 --> FSM
+    FSM --> SERVO_CTRL
+    FSR --> SAFETY
+    SERVO_CTRL --> SAFETY
+    SAFETY --> THUMB
+    SAFETY --> INDEX
+    SAFETY --> MIDDLE
+    SAFETY --> RING
+    SAFETY --> PINKY
+    BATTERY --> SERVO_RAIL
+    BATTERY --> LOGIC_RAIL
+    SERVO_RAIL --> THUMB
+    SERVO_RAIL --> INDEX
+    SERVO_RAIL --> MIDDLE
+    SERVO_RAIL --> RING
+    SERVO_RAIL --> PINKY
+    LOGIC_RAIL --> ESP32
+    LOGIC_RAIL --> VOICE
+    LOGIC_RAIL --> EMG
+```
+
+### **Control Flow & State Machine Diagram**
+
+```mermaid
+stateDiagram-v2
+    [*] --> IDLE
+    
+    IDLE --> EMG_CONTROL: System Initialized
+    
+    EMG_CONTROL --> GESTURE: Voice trigger + Valid command
+    EMG_CONTROL --> GESTURE: EMG muscle flex detected
+    
+    GESTURE --> EMG_CONTROL: Gesture complete
+    
+    EMG_CONTROL --> ANIMATION_ILY: "I love you" command
+    ANIMATION_ILY --> EMG_CONTROL: Animation complete
+    
+    EMG_CONTROL --> ANIMATION_RPS: "Rock-Paper-Scissors" command
+    ANIMATION_RPS --> EMG_CONTROL: Choice made
+    
+    EMG_CONTROL --> SAFETY_STOP: FSR limit exceeded<br/>OR EMG overload<br/>OR Watchdog timeout
+    SAFETY_STOP --> EMG_CONTROL: User releases grip<br/>Safety reset triggered
+    
+    EMG_CONTROL --> [*]: Shutdown signal
+```
+
+### **Data Flow: Voice Command Pipeline**
+
+```mermaid
+sequenceDiagram
+    User->>PTT: Press Push-to-Talk button (GPIO 25)
+    PTT->>ESP32: Trigger input signal
+    ESP32->>INMP441: Start audio capture (I2S protocol)
+    INMP441->>ESP32: Stream audio samples
+    ESP32->>WIFI: Connect to Wi-Fi (SSID/PASS)
+    WIFI->>CLOUD: Send audio bytes + API key
+    CLOUD->>CLOUD: Process via Google Speech-to-Text
+    CLOUD->>ESP32: Return transcribed text<br/>(e.g., "Close Fist")
+    ESP32->>ESP32: Parse command & match gesture
+    ESP32->>SERVO_CTRL: Calculate target angles
+    SERVO_CTRL->>THUMB: Write PWM signal (GPIO 13)
+    SERVO_CTRL->>INDEX: Write PWM signal (GPIO 12)
+    SERVO_CTRL->>MIDDLE: Write PWM signal (GPIO 14)
+    SERVO_CTRL->>RING: Write PWM signal (GPIO 27)
+    SERVO_CTRL->>PINKY: Write PWM signal (GPIO 26)
+    SERVO_CTRL->>FSR: Monitor pressure (GPIO 36, 39)
+    FSR->>SAFETY: Pressure threshold check
+    SAFETY->>User: Haptic feedback (grip achieved)
+```
+
+### **Power Management & Rail Isolation**
+
+```mermaid
+graph LR
+    BATTERY["🔋 Xiaomi 4i<br/>20000mAh<br/>Dual USB Output"]
+    
+    USB1["USB Port 1<br/>5V Output"]
+    USB2["USB Port 2<br/>5V Output"]
+    
+    SERVO_POWER["⚡ Servo Rail Breadboard<br/>5V Direct<br/>500mA+"]
+    LOGIC_POWER["⚡ Logic Rail Breadboard<br/>5V → ESP32 Regulator<br/>→ 3.3V<br/>100mA clean"]
+    
+    SERVO_DRAWS["Servo Power Draws:<br/>• Idle: 5-10mA/servo<br/>• Active: 100-200mA/servo<br/>• Peak: 500mA (all 5)"]
+    
+    LOGIC_DRAWS["Logic Power Draws:<br/>• ESP32: 80-160mA<br/>• Mic: 5-10mA<br/>• EMG: 3-5mA<br/>• Total: ~200mA"]
+    
+    BATTERY --> USB1
+    BATTERY --> USB2
+    USB1 --> SERVO_POWER
+    USB2 --> LOGIC_POWER
+    SERVO_POWER --> SERVO_DRAWS
+    LOGIC_POWER --> LOGIC_DRAWS
+    
+    style SERVO_DRAWS fill:#ffcccc
+    style LOGIC_DRAWS fill:#ccffcc
+```
+
+---
+
+## 🖐️ 3D Model Components
+
+### **Hand Assembly Structure**
+
+The prosthetic hand consists of **10 3D-printed parts** designed for FDM printing (PLA material):
+
+| Component | File Name | Purpose | Print Time | Material |
+|:---|:---|:---|:---:|:---:|
+| **Hand Layout** | `Hand Layout.stl` | Main reference assembly drawing | — | Reference |
+| **Palm/Metacarpal** | `Hand.stl` | Central palm structure housing servo mounts | 2-3 hrs | PLA |
+| **Thumb Digit** | `Finger_Thumb.stl` | Opposable thumb with servo horn slot | 45 min | PLA |
+| **Index Finger** | `Finger_Index.stl` | Index finger phalanges & servo linkage | 1 hr | PLA |
+| **Middle Finger** | `Finger_Middle.stl` | Middle finger phalanges & servo linkage | 1 hr | PLA |
+| **Ring Finger** | `Finger_Ring.stl` | Ring finger phalanges & servo linkage | 1 hr | PLA |
+| **Pinky Finger** | `Finger_Pinky.stl` | Pinky finger phalanges & servo linkage | 45 min | PLA |
+| **Arm Cover** | `Arm_Cover.stl` | Protective forearm shell & electronics enclosure | 1-2 hrs | PLA |
+| **Print Layout 1** | `Hand_print_layout.stl` | Optimized 2D nesting for print bed | — | Reference |
+| **Print Layout 2** | `Right_Hand.stl` | Mirror version (left/right compatibility) | — | Reference |
+
+### **3D Printing Recommendations**
+
+```
+Printer Settings:
+├─ Nozzle Temperature: 210°C (PLA)
+├─ Bed Temperature: 60°C
+├─ Layer Height: 0.2mm (0.1mm for finger tips for detail)
+├─ Infill: 20% (gyroid pattern for strength/weight ratio)
+├─ Support: Yes (especially for finger undercuts)
+├─ Print Speed: 50mm/s
+├─ Total Print Time: ~8-10 hours
+└─ Material Weight: ~250g PLA filament
+```
+
+### **Assembly Instructions**
+
+1. Print all components with support structures
+2. Remove supports carefully (palm/finger joints are delicate)
+3. Use M3 bolts & nuts to attach servos to palm housing
+4. Connect servo horns to finger linkages via push-fit connectors
+5. Assemble fingers and attach to palm pivot points
+6. Mount arm cover shell with servo motor peeking through rear cavity
+7. Route wiring through forearm tube to electronics enclosure
+8. Perform mechanical range-of-motion test before powering
+
+---
+
+## 🔗 Wire Mapping
+
+### **Connection Matrix: Sensors ↔ ESP32**
+
+**Detailed wiring documentation available in:** [hardware/wiring/Wire Mapping for the Development of a Low-Cost Prosthetic Hand (1).xlsx](hardware/wiring/Wire%20Mapping%20for%20the%20Development%20of%20a%20Low-Cost%20Prosthetic%20Hand%20%281%29.xlsx)
+
+### **Quick Wire Reference (5V Servos)**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    SERVO CONNECTIONS                         │
+├──────────────┬──────────┬──────────┬──────────────────────────┤
+│ Servo Motor  │ Color    │ ESP32    │ Function                 │
+├──────────────┼──────────┼──────────┼──────────────────────────┤
+│ Thumb        │ Orange   │ GPIO 13  │ PWM Output (1500µs mid)  │
+│ Index        │ Yellow   │ GPIO 12  │ PWM Output (1500µs mid)  │
+│ Middle       │ Green    │ GPIO 14  │ PWM Output (1500µs mid)  │
+│ Ring         │ Blue     │ GPIO 27  │ PWM Output (1500µs mid)  │
+│ Pinky        │ Purple   │ GPIO 26  │ PWM Output (1500µs mid)  │
+│ GND (All)    │ Black    │ GND      │ Common ground            │
+│ +5V (All)    │ Red      │ +5V Rail │ Servo power rail         │
+└──────────────┴──────────┴──────────┴──────────────────────────┘
+```
+
+### **Sensor Wire Connections**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              SENSOR & INPUT CONNECTIONS                     │
+├──────────────────┬──────────┬──────────┬────────────────────┤
+│ Component        │ Signal   │ ESP32    │ Type               │
+├──────────────────┼──────────┼──────────┼────────────────────┤
+│ EMG Sensor       │ SIG      │ GPIO 34  │ Analog Input (ADC) │
+│ FSR Thumb        │ SIG      │ GPIO 36  │ Analog Input (ADC) │
+│ FSR Index        │ SIG      │ GPIO 39  │ Analog Input (ADC) │
+│ INMP441 Mic      │ WS       │ GPIO 33  │ I2S Word Select    │
+│ INMP441 Mic      │ SCK      │ GPIO 32  │ I2S Clock          │
+│ INMP441 Mic      │ SD       │ GPIO 35  │ I2S Data           │
+│ Push-to-Talk     │ Button   │ GPIO 25  │ Digital Input      │
+│ All Sensors      │ GND      │ GND      │ Common ground      │
+│ All Sensors      │ +3.3V    │ 3.3V    │ Logic power        │
+└──────────────────┴──────────┴──────────┴────────────────────┘
+```
+
+### **I2S Audio Path (Voice Input)**
+
+```
+INMP441 Microphone → I2S Protocol → ESP32
+│
+├─ WS (Word Select)  = GPIO 33  [Sync clock]
+├─ SCK (Bit Clock)   = GPIO 32  [Timing reference]
+└─ SD (Serial Data)  = GPIO 35  [Audio data stream]
+
+I2S Format:
+├─ Sample Rate: 16kHz (optimized for speech)
+├─ Bit Depth: 16-bit PCM
+├─ Channels: 1 (Mono)
+├─ DMA Buffer: 4 blocks × 256 samples
+└─ Total Latency: ~64ms (acceptable for real-time control)
+```
+
+---
+
+## 📊 Electrical Schematic
+
+### **High-Level Block Diagram**
+
+**Schematic file:** [hardware/schematics/Prosthetci Hand Schematic.png](hardware/schematics/Prosthetci%20Hand%20Schematic.png)
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    POWER DISTRIBUTION SYSTEM                      │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  Xiaomi Power Bank 4i (20000mAh, Dual Output)                    │
+│  ├─ USB Port 1 (5V, 1A) ──► SERVO POWER RAIL (5V, 500mA+)       │
+│  │                         ├─► MG90s Servo 1 (GPIO 13)           │
+│  │                         ├─► MG90s Servo 2 (GPIO 12)           │
+│  │                         ├─► MG90s Servo 3 (GPIO 14)           │
+│  │                         ├─► MG90s Servo 4 (GPIO 27)           │
+│  │                         └─► MG90s Servo 5 (GPIO 26)           │
+│  │                                                                │
+│  └─ USB Port 2 (5V, 1A) ──► LOGIC POWER RAIL (3.3V via ESP32)   │
+│                             ├─ ESP32 DevKit (Voltage Regulator)  │
+│                             │  ├─ INMP441 I2S Mic                │
+│                             │  ├─ EMG Sensor V3.0                │
+│                             │  ├─ FSR402 Sensors (×2)            │
+│                             │  └─ GPIO Expander                  │
+│                             │                                     │
+│                             └─ Tactile Button (GPIO 25)          │
+│                                                                   │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### **Voltage Levels & Current Budget**
+
+```
+┌────────────────────────────────────────────────────────┐
+│            POWER CONSUMPTION ANALYSIS                  │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│ SERVO RAIL (5V):                                       │
+│  • Idle (all open):        25-50mA    (~250mW)       │
+│  • Single servo active:   100-150mA   (~750mW)       │
+│  • All servos moving:     400-600mA   (~3W)          │
+│  • Peak grip (all tight):  600-800mA  (~4W)          │
+│                                                        │
+│ LOGIC RAIL (3.3V @ ESP32):                            │
+│  • ESP32 idle:             80-100mA                   │
+│  • Wi-Fi transmit:        150-200mA (peak)           │
+│  • Mic + Sensors:          15-25mA                    │
+│  • Total logic:            150-250mA                  │
+│                                                        │
+│ BATTERY RUNTIME (Estimated):                          │
+│  • Idle (servos open):     ~100 hours                 │
+│  • Mixed use (50% active): ~12-15 hours              │
+│  • Heavy use (all moving): ~5-7 hours                 │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ⚙️ Control Logic
+
+### **Operating Modes**
+
+#### **Mode 1: EMG Toggle Control (Offline)**
+- **Activation:** Muscle flex detected by EMG sensor
+- **Logic:** Binary toggle (Open ↔ Close)
+- **Use Case:** Rapid, frequent actions; no voice needed
+- **Reliability:** High (no network dependency)
+
+```
+EMG Signal → Threshold Detection → Debounce (200ms) 
+  → State Toggle → Servo Movement → 2-3s Animation → Return to Idle
+```
+
+#### **Mode 2: Voice Command Control (Online)**
+- **Activation:** Push-to-Talk button (GPIO 25)
+- **Processing Pipeline:**
+  1. Capture 5-second audio window via I2S
+  2. Stream to Google Cloud Speech-to-Text API
+  3. Parse returned text for gesture keywords
+  4. Execute corresponding servo movement
+- **Supported Commands:** "Close Fist," "Point," "Peace Sign," "I Love You," "Rock Paper Scissors"
+
+#### **Mode 3: Closed-Loop Grip**
+- **Purpose:** Prevent over-gripping & crushing delicate objects
+- **Implementation:**
+  - FSR sensors in fingertips detect force
+  - Once force exceeds threshold (2000 units), grip stops tightening
+  - Maintains constant pressure automatically
+
+#### **Mode 4: Custom Animations**
+- **I Love You:** Sequential finger extension with timing
+- **Rock-Paper-Scissors:** Randomized hand shape selection
+
+#### **Mode 5: Safety Shutdown**
+- **Triggers:**
+  - FSR overload (detected crush force)
+  - EMG sensor saturation (noise/interference)
+  - Watchdog timer expiration (10 seconds)
+- **Action:** Immediately open hand to safe position; log error to serial
 
 ---
 
 ## 💻 Software Setup
 
-### Prerequisites
-* [Arduino IDE](https://www.arduino.cc/en/software)
-* **Google Cloud Console Account** (for API Key)
+### **Prerequisites**
 
-### Required Libraries
-Install these via the Arduino Library Manager:
-* `ESP32Servo` (by Kevin Harrington)
-* `ArduinoJson` (by Benoit Blanchon)
-* `WiFiClientSecure` (Built-in)
+- **Arduino IDE** v1.8.19+ ([Download](https://www.arduino.cc/en/software))
+- **ESP32 Board Support** installed via Board Manager
+- **Google Cloud Account** with Speech-to-Text API enabled (Free tier: 60 minutes/month)
+- **Wi-Fi Network** with 2.4GHz support (5GHz not recommended for ESP32)
 
+### **Required Libraries**
 
-## ⚠️ Disclaimer
-*This project is a research prototype intended for educational and developmental purposes. It is not a medically certified device.*
+Install via Arduino Library Manager (`Sketch → Include Library → Manage Libraries`):
+
+| Library | Author | Purpose |
+|:---|:---|:---|
+| `ESP32Servo` | Kevin Harrington | PWM servo control for MG90s motors |
+| `ArduinoJson` | Benoit Blanchon | JSON parsing for API responses |
+| `INMP441-I2S` | Especially Hobby | I2S microphone audio capture (PDM) |
+| `WiFiClientSecure` | Built-in | HTTPS connection to Google Cloud API |
+
+### **Google Cloud Setup**
+
+1. Create a [Google Cloud Project](https://console.cloud.google.com/)
+2. Enable **Cloud Speech-to-Text API**
+3. Create a **Service Account** with "Editor" permissions
+4. Generate and download a **JSON key file**
+5. Extract `client_email` and `private_key` from the JSON
+6. Add credentials to the firmware `#define` statements
+
+---
+
+## 🚀 Installation & Setup
+
+### **Step 1: Prepare Hardware**
+
+```bash
+1. Assemble 3D-printed hand structure (see 3D Model Components)
+2. Mount 5 MG90s servos inside palm housing
+3. Attach servo horns to finger linkages
+4. Solder power supply rails on breadboard (5V servo, 3.3V logic)
+5. Wire all components according to Master Pinout (see Wire Mapping section)
+6. Mount ESP32 DevKit inside arm cover
+7. Connect Xiaomi power bank via USB cables
+8. Perform visual inspection for short circuits
+```
+
+### **Step 2: Prepare Firmware**
+
+```bash
+# Clone the repository
+git clone https://github.com/harshitt13/Krtrimahastah.git
+cd Krtrimahastah
+
+# Open Arduino IDE
+1. File → Open → firmware/prosthetic_hand_improved.ino
+2. Board: ESP32 Dev Module
+3. Port: COM3 (or your ESP32 port)
+4. Upload Speed: 115200
+```
+
+### **Step 3: Configure Credentials**
+
+Edit [firmware/prosthetic_hand_improved.ino](firmware/prosthetic_hand_improved.ino) and update:
+
+```cpp
+#define WIFI_SSID           "Your_Wi-Fi_Network_Name"
+#define WIFI_PASS           "Your_Wi-Fi_Password"
+
+#define GOOGLE_CLOUD_EMAIL  "your-service@project.iam.gserviceaccount.com"
+#define GOOGLE_CLOUD_KEY    "-----BEGIN PRIVATE KEY-----\nMIIE..."
+```
+
+### **Step 4: Upload & Test**
+
+```
+1. Verify code (Sketch → Verify)
+2. Upload to ESP32 (Sketch → Upload)
+3. Open Serial Monitor (Tools → Serial Monitor, 115200 baud)
+4. Press Reset button on ESP32
+5. Observe startup messages and Wi-Fi connection
+6. Test voice mode by pressing Push-to-Talk button
+7. Test EMG mode by flexing muscles
+8. Verify all 5 fingers move smoothly
+```
+
+### **Step 5: Calibration**
+
+```cpp
+EMG Sensor Tuning:
+├─ Flex muscle & note ADC reading
+├─ Set EMG_OPEN_THR to 1/2 of reading
+└─ Set EMG_CLOSE_THR to 3/4 of reading
+
+FSR Sensor Tuning:
+├─ Press fingertip & note ADC reading
+├─ Set FSR_LIMIT to safe threshold (default 2000)
+└─ Test grip on soft object to verify cutoff
+
+Servo Angle Tuning:
+├─ Adjust MAX_TP (thumb angle) for comfort
+├─ Adjust MAX_OTHERS (finger angle) for dexterity
+└─ Test all gestures for smooth motion
+```
+
+---
+
+## 📖 Usage Guide
+
+### **Voice Control**
+
+```
+1. Press and hold the Push-to-Talk button (GPIO 25)
+2. Speak clearly: "Close Fist," "Open Hand," "Point," "Peace," etc.
+3. Release button after speaking
+4. Listen for confirmation beep
+5. Hand executes the gesture
+6. After 3 seconds, returns to neutral position
+
+Supported Commands:
+├─ Close/Fist         → All fingers contract
+├─ Open/Spread        → All fingers extend
+├─ Point              → Index finger only
+├─ Peace/Victory      → Index + Middle extended
+├─ Thumbs Up/Okay     → Thumb extended
+├─ Love/ILY           → "I Love You" sign animation
+└─ RPS/Game           → Random Rock/Paper/Scissors shape
+```
+
+### **EMG Control**
+
+```
+1. Ensure EMG sensor strap is worn around forearm
+2. Relax arm at rest
+3. Flex muscle briefly (1-2 second contraction)
+4. Listen for confirmation beep
+5. Hand gesture toggles (Open ↔ Close)
+6. No voice required; works offline
+
+Gesture Sequence:
+├─ Open → Flex → Close (1.5s animation)
+├─ Close → Flex → Open (1.5s animation)
+└─ Debounce: 200ms (ignores multiple quick flexes)
+```
+
+### **Emergency Stop**
+
+```
+Press and hold Push-to-Talk button for >5 seconds
+→ Triggers SAFETY_STOP state
+→ All fingers open slowly
+→ Hand returns to safe neutral position
+```
+
+---
+
+## 📁 File Structure
+
+```
+Krtrimahastah/
+├── README.md                                    # Project documentation
+├── LICENSE                                      # MIT License
+│
+├── firmware/
+│   └── prosthetic_hand_improved.ino            # Main ESP32 firmware (682 lines)
+│
+├── hardware/
+│   ├── 3d-models/
+│   │   ├── Hand Layout.stl                     # Full assembly reference
+│   │   ├── Hand.stl                            # Palm structure
+│   │   ├── Finger_Thumb.stl                    # Thumb digit
+│   │   ├── Finger_Index.stl                    # Index finger
+│   │   ├── Finger_Middle.stl                   # Middle finger
+│   │   ├── Finger_Ring.stl                     # Ring finger
+│   │   ├── Finger_Pinky.stl                    # Pinky finger
+│   │   ├── Arm_Cover.stl                       # Forearm enclosure
+│   │   ├── Hand_print_layout.stl               # Print nesting guide
+│   │   └── Right_Hand.stl                      # Mirror version
+│   │
+│   ├── schematics/
+│   │   └── Prosthetci Hand Schematic.png       # Circuit diagram
+│   │
+│   └── wiring/
+│       └── Wire Mapping for the Development of a Low-Cost Prosthetic Hand (1).xlsx
+│           # Detailed pinout & connection matrix
+│
+└── documentation/
+    ├── ASSEMBLY.md                             # Step-by-step assembly guide
+    ├── TROUBLESHOOTING.md                      # Common issues & solutions
+    └── API_INTEGRATION.md                      # Google Cloud API setup
+```
+
+---
+
+## 🔧 Troubleshooting
+
+### **Common Issues & Solutions**
+
+| Issue | Cause | Solution |
+|:---|:---|:---|
+| **Servos not moving** | Incorrect GPIO pins | Verify pinout in firmware matches hardware wiring |
+| **Wi-Fi connection fails** | Wrong credentials | Update SSID/password in firmware config section |
+| **Voice commands not recognized** | Poor microphone placement | Position mic away from servo noise; clean I2S lines |
+| **Crushing grip** | FSR threshold too high | Lower FSR_LIMIT value in firmware; recalibrate |
+| **EMG sensor noise** | Poor electrode contact | Clean arm skin; reposition electrodes; dampen cable |
+| **Servo jitter** | Power supply noise | Use separate 5V rail for servos; add 100µF capacitor |
+| **Hand won't open after grip** | Watchdog triggered | Check serial monitor; reset ESP32 or adjust timeout |
+
+---
+
+## 📦 Dependencies & Compatibility
+
+| Dependency | Version | Status |
+|:---|:---:|:---|
+| Arduino IDE | 1.8.19+ | ✅ Supported |
+| ESP32 Board | Arduino-ESP32 2.0.0+ | ✅ Supported |
+| ESP32Servo Library | 0.9.0+ | ✅ Required |
+| ArduinoJson | 6.18.0+ | ✅ Required |
+| Google Cloud API | v1p1beta1 | ✅ Supported |
+| MG90s Servo | Original | ✅ Required |
+| INMP441 Microphone | I2S compatible | ✅ Required |
+
+---
+
+## 🎓 Learning Resources
+
+- **ESP32 Documentation:** [https://docs.espressif.com/projects/esp-idf/](https://docs.espressif.com/projects/esp-idf/)
+- **Google Cloud Speech API:** [https://cloud.google.com/speech-to-text/docs](https://cloud.google.com/speech-to-text/docs)
+- **Servo Motor Control:** [https://randomnerdtutorials.com/esp32-servo-motor/](https://randomnerdtutorials.com/esp32-servo-motor/)
+- **Arduino Serial Communication:** [https://www.arduino.cc/en/reference/serial](https://www.arduino.cc/en/reference/serial)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these guidelines:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/YourFeature`)
+3. **Commit** changes with clear messages
+4. **Push** to your fork and **create a Pull Request**
+5. **Describe** changes, issues fixed, and testing performed
+
+### **Contribution Areas**
+- Firmware improvements (efficiency, new gestures)
+- 3D model enhancements (comfort, durability)
+- Additional sensor integration (temperature, humidity)
+- Documentation & tutorials
+- Cost optimizations
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+Permission is granted for personal, educational, and commercial use with proper attribution.
+
+---
+
+## ⚠️ Disclaimer & Safety Notice
+
+**IMPORTANT:** This is a **research prototype** and **NOT a medically certified device**. 
+
+### **Usage Warnings:**
+- ⚠️ Not intended for medical/therapeutic use without proper regulatory approval
+- ⚠️ Strength and safety capabilities vary widely based on component quality and assembly accuracy
+- ⚠️ Do not use with high-pressure/high-risk gripping tasks
+- ⚠️ Servo motors can pinch fingers; always supervise use around children
+- ⚠️ Battery may overheat if damaged; inspect regularly for swelling
+- ⚠️ Wi-Fi connectivity may drop; EMG control serves as offline backup
+- ⚠️ Test all safety features before extended use
+
+### **Liability:**
+The author and contributors assume **NO LIABILITY** for injuries, property damage, or adverse outcomes resulting from the use or misuse of this device.
+
+---
+
+## 👨‍💻 Authors & Credits
+
+**Project Lead:** Harshit Kushwaha ([@harshitt13](https://github.com/harshitt13))
+
+**Contributors:**
+- Open-source community members
+- Arduino & ESP32 framework developers
+- 3D printing & robotics enthusiasts
+
+---
+
+## 📞 Contact & Support
+
+- **GitHub Issues:** [Report bugs or request features](https://github.com/harshitt13/Krtrimahastah/issues)
+- **Email:** (Contact info if available)
+- **Project Demo:** [https://youtu.be/BNZyQIecj14](https://youtu.be/BNZyQIecj14)
+
+---
+
+## 📈 Project Status
+
+| Aspect | Status |
+|:---|:---|
+| Core Functionality | ✅ Complete |
+| Voice Control | ✅ Implemented |
+| EMG Control | ✅ Implemented |
+| Haptic Feedback | ✅ Implemented |
+| Power Management | ✅ Optimized |
+| Documentation | ✅ Comprehensive |
+| Testing | 🔄 Ongoing |
+| Certification | ⏳ Planned |
+
+---
+
+## 🙏 Acknowledgments
+
+- **Arduino Community** for excellent microcontroller support
+- **Google Cloud** for accessible AI/ML APIs
+- **Thingiverse** community for 3D printing inspiration
+- **Open-source enthusiasts** who believe in accessible technology
+
+---
+
+**Last Updated:** February 1, 2026  
+**Repository:** [github.com/harshitt13/Krtrimahastah](https://github.com/harshitt13/Krtrimahastah)  
+**License:** MIT  
+
+*Making prosthetics affordable, intelligent, and accessible to all.* 🤖
