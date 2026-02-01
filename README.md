@@ -36,9 +36,9 @@ By leveraging 3D printing, the ESP32 microcontroller, cloud AI integration, and 
 
 ### 🎯 **Multi-Modal Control System**
 
-- **Voice Commands (Primary):** Hybrid input system using natural language processing via Google Cloud Speech-to-Text API
-- **EMG Muscle Signals (Secondary):** Backup EMG-based control for silent/offline operation
-- **Cloud AI Integration:** Understands complex commands like "Point," "Peace Sign," "Pinch," and custom gestures
+- **Voice Commands (Primary):** Integrated with SinricPro IoT platform for natural language voice control via Alexa/Google Assistant
+- **EMG Muscle Signals (Secondary):** Backup EMG-based control for silent/offline operation with binary toggle (Open ↔ Close)
+- **Smart Home Integration:** Connect to Amazon Alexa or Google Home for hands-free gesture commands
 
 ### 🧠 **Intelligent Hardware**
 
@@ -95,7 +95,7 @@ A modular, 3D-printed prosthetic hand that combines:
 | :---------------------------- | :------: | :----------------- | :----------------------------------------------------- | :-------------: |
 | **ESP32 DevKit V1**           |    1     | Amazon/Aliexpress  | Main microcontroller (32-bit dual-core, Wi-Fi/BLE)     |       $12       |
 | **MG90s Servo Motor**         |    5     | Hobbyist Retailers | Individual finger actuators (180° range, 1.5kg torque) |       $25       |
-| **INMP441 I2S Microphone**    |    1     | Amazon             | Digital audio input for voice commands                 |       $8        |
+| **SinricPro Account**         |    1     | Free (sinric.pro)  | IoT cloud service for voice control integration        |      FREE       |
 | **EMG Sensor Module V3.0**    |    1     | Amazon             | Muscle signal acquisition (3-channel, 10-bit ADC)      |       $20       |
 | **FSR402 Pressure Sensor**    |    2     | Adafruit/Sparkfun  | Tactile feedback in thumb & index finger               |       $8        |
 | **Xiaomi Power Bank 4i**      |    1     | Amazon             | 20000mAh portable battery with dual USB-A output       |       $25       |
@@ -104,7 +104,7 @@ A modular, 3D-printed prosthetic hand that combines:
 | **3D Printed Parts**          |    —     | FDM Printer        | PLA chassis (hand, phalanges, forearm cover)           |       $3        |
 | **Servo Horns & Hardware**    |    —     | Included           | Servo linkages & fasteners                             |       $2        |
 | **USB-C Cable & Connectors**  |    1     | Stock              | Power delivery & debugging                             |       $2        |
-|                               |          |                    | **TOTAL ESTIMATED COST**                               |    **~$111**    |
+|                               |          |                    | **TOTAL ESTIMATED COST**                               |    **~$103**    |
 
 ---
 
@@ -119,10 +119,6 @@ A modular, 3D-printed prosthetic hand that combines:
 | **SERVO: Middle**  | PWM Signal         |  GPIO 14   | OUTPUT     | Channel 2, PWM (0-180°)           |
 | **SERVO: Ring**    | PWM Signal         |  GPIO 27   | OUTPUT     | Channel 3, PWM (0-180°)           |
 | **SERVO: Pinky**   | PWM Signal         |  GPIO 26   | OUTPUT     | Channel 4, PWM (0-180°)           |
-| **VOICE TRIGGER**  | Button Input       |  GPIO 25   | INPUT      | Pull-down activated (active HIGH) |
-| **INMP441 Mic**    | Word Select (WS)   |  GPIO 33   | I2S CLOCK  | Synchronization signal            |
-| **INMP441 Mic**    | Serial Clock (SCK) |  GPIO 32   | I2S CLOCK  | Bit clock for audio streaming     |
-| **INMP441 Mic**    | Serial Data (SD)   |  GPIO 35   | I2S DATA   | Audio data input (PDM format)     |
 | **EMG Sensor**     | Analog Output      |  GPIO 34   | ADC1 INPUT | 0-4095 (0-3.3V) muscle signal     |
 | **FSR: Thumb Tip** | Analog Output      |  GPIO 36   | ADC1 INPUT | Pressure sensing (0-2000 units)   |
 | **FSR: Index Tip** | Analog Output      |  GPIO 39   | ADC1 INPUT | Pressure sensing (0-2000 units)   |
@@ -146,17 +142,15 @@ A modular, 3D-printed prosthetic hand that combines:
 ```mermaid
 graph TB
     subgraph "Input Layer"
-        VOICE["🎤 Voice Input<br/>INMP441 I2S Mic"]
+        VOICE["🎤 Voice Input<br/>Alexa/Google Assistant"]
         EMG["💪 EMG Sensor<br/>Muscle Signals"]
         FSR["🖐️ FSR Sensors<br/>Tactile Feedback"]
-        PTT["🔘 Push-to-Talk<br/>GPIO 25"]
     end
-
+    
     subgraph "Processing Layer"
         ESP32["⚙️ ESP32 DevKit<br/>Main Microcontroller<br/>Dual-Core 240MHz"]
         WIFI["📡 Wi-Fi Module<br/>802.11 b/g/n"]
-        CLOUD["☁️ Google Cloud<br/>Speech-to-Text API"]
-    end
+        SINRIC["☁️ SinricPro<br/>IoT Cloud Service"]
 
     subgraph "Control Logic"
         FSM["🔄 State Machine<br/>5 Operating Modes"]
@@ -178,12 +172,12 @@ graph TB
         LOGIC_RAIL["⚡ Logic Rail (3.3V)<br/>Low Noise"]
     end
 
-    VOICE --> WIFI
-    PTT --> ESP32
+    VOICE --> SINRIC
     EMG --> ESP32
     FSR --> ESP32
-    WIFI --> CLOUD
-    CLOUD --> ESP32
+    ESP32 --> WIFI
+    WIFI --> SINRIC
+    SINRIC --> ESP32
     ESP32 --> FSM
     FSM --> SERVO_CTRL
     FSR --> SAFETY
@@ -201,7 +195,6 @@ graph TB
     SERVO_RAIL --> RING
     SERVO_RAIL --> PINKY
     LOGIC_RAIL --> ESP32
-    LOGIC_RAIL --> VOICE
     LOGIC_RAIL --> EMG
 ```
 
@@ -234,15 +227,10 @@ stateDiagram-v2
 
 ```mermaid
 sequenceDiagram
-    User->>PTT: Press Push-to-Talk button (GPIO 25)
-    PTT->>ESP32: Trigger input signal
-    ESP32->>INMP441: Start audio capture (I2S protocol)
-    INMP441->>ESP32: Stream audio samples
-    ESP32->>WIFI: Connect to Wi-Fi (SSID/PASS)
-    WIFI->>CLOUD: Send audio bytes + API key
-    CLOUD->>CLOUD: Process via Google Speech-to-Text
-    CLOUD->>ESP32: Return transcribed text<br/>(e.g., "Close Fist")
-    ESP32->>ESP32: Parse command & match gesture
+    User->>Alexa: Speak voice command<br/>("Alexa, turn on Fist")
+    Alexa->>SinricPro: Process & forward command
+    SinricPro->>ESP32: Send gesture command via WebSocket
+    ESP32->>ESP32: Parse mode command<br/>(e.g., "fist", "peace", "point")
     ESP32->>SERVO_CTRL: Calculate target angles
     SERVO_CTRL->>THUMB: Write PWM signal (GPIO 13)
     SERVO_CTRL->>INDEX: Write PWM signal (GPIO 12)
@@ -268,7 +256,7 @@ graph LR
 
     SERVO_DRAWS["Servo Power Draws:<br/>• Idle: 5-10mA/servo<br/>• Active: 100-200mA/servo<br/>• Peak: 500mA (all 5)"]
 
-    LOGIC_DRAWS["Logic Power Draws:<br/>• ESP32: 80-160mA<br/>• Mic: 5-10mA<br/>• EMG: 3-5mA<br/>• Total: ~200mA"]
+    LOGIC_DRAWS["Logic Power Draws:<br/>• ESP32: 80-160mA<br/>• EMG + FSR: 10-15mA<br/>• Total: ~140mA"]
 
     BATTERY --> USB1
     BATTERY --> USB2
@@ -286,6 +274,9 @@ graph LR
 ## 🖐️ 3D Model Components
 
 ### **Hand Assembly Structure**
+
+![Hand Layout Reference](hardware/3d-models/Hand%20Layout.stl)
+*Reference: Complete hand assembly layout showing all finger components and palm structure*
 
 The prosthetic hand consists of **10 3D-printed parts** designed for FDM printing (PLA material):
 
@@ -364,30 +355,21 @@ Printer Settings:
 │ EMG Sensor       │ SIG      │ GPIO 34  │ Analog Input (ADC) │
 │ FSR Thumb        │ SIG      │ GPIO 36  │ Analog Input (ADC) │
 │ FSR Index        │ SIG      │ GPIO 39  │ Analog Input (ADC) │
-│ INMP441 Mic      │ WS       │ GPIO 33  │ I2S Word Select    │
-│ INMP441 Mic      │ SCK      │ GPIO 32  │ I2S Clock          │
-│ INMP441 Mic      │ SD       │ GPIO 35  │ I2S Data           │
-│ Push-to-Talk     │ Button   │ GPIO 25  │ Digital Input      │
 │ All Sensors      │ GND      │ GND      │ Common ground      │
 │ All Sensors      │ +3.3V    │ 3.3V    │ Logic power        │
 └──────────────────┴──────────┴──────────┴────────────────────┘
 ```
 
-### **I2S Audio Path (Voice Input)**
+### **SinricPro Voice Integration**
 
 ```
-INMP441 Microphone → I2S Protocol → ESP32
+Alexa/Google Assistant → SinricPro Cloud → WebSocket → ESP32
 │
-├─ WS (Word Select)  = GPIO 33  [Sync clock]
-├─ SCK (Bit Clock)   = GPIO 32  [Timing reference]
-└─ SD (Serial Data)  = GPIO 35  [Audio data stream]
-
-I2S Format:
-├─ Sample Rate: 16kHz (optimized for speech)
-├─ Bit Depth: 16-bit PCM
-├─ Channels: 1 (Mono)
-├─ DMA Buffer: 4 blocks × 256 samples
-└─ Total Latency: ~64ms (acceptable for real-time control)
+├─ Supported Gestures: 20+ hand poses
+├─ Protocol: WebSocket (persistent connection)
+├─ Commands: Natural language ("open hand", "make a fist", "point")
+├─ Response Time: ~200-500ms (cloud processing)
+└─ Offline Fallback: EMG sensor toggle control
 ```
 
 ---
@@ -413,12 +395,9 @@ I2S Format:
 │  │                                                                │
 │  └─ USB Port 2 (5V, 1A) ──► LOGIC POWER RAIL (3.3V via ESP32)   │
 │                             ├─ ESP32 DevKit (Voltage Regulator)  │
-│                             │  ├─ INMP441 I2S Mic                │
+│                             │  ├─ Wi-Fi Module (SinricPro)       │
 │                             │  ├─ EMG Sensor V3.0                │
-│                             │  ├─ FSR402 Sensors (×2)            │
-│                             │  └─ GPIO Expander                  │
-│                             │                                     │
-│                             └─ Tactile Button (GPIO 25)          │
+│                             │  └─ FSR402 Sensors (×2)            │
 │                                                                   │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -438,9 +417,9 @@ I2S Format:
 │                                                        │
 │ LOGIC RAIL (3.3V @ ESP32):                            │
 │  • ESP32 idle:             80-100mA                   │
-│  • Wi-Fi transmit:        150-200mA (peak)           │
-│  • Mic + Sensors:          15-25mA                    │
-│  • Total logic:            150-250mA                  │
+│  • Wi-Fi active:          150-200mA (peak)           │
+│  • EMG + FSR Sensors:      10-15mA                    │
+│  • Total logic:            140-220mA                  │
 │                                                        │
 │ BATTERY RUNTIME (Estimated):                          │
 │  • Idle (servos open):     ~100 hours                 │
@@ -470,13 +449,13 @@ EMG Signal → Threshold Detection → Debounce (200ms)
 
 #### **Mode 2: Voice Command Control (Online)**
 
-- **Activation:** Push-to-Talk button (GPIO 25)
+- **Activation:** Voice command via Alexa or Google Assistant
 - **Processing Pipeline:**
-  1. Capture 5-second audio window via I2S
-  2. Stream to Google Cloud Speech-to-Text API
-  3. Parse returned text for gesture keywords
-  4. Execute corresponding servo movement
-- **Supported Commands:** "Close Fist," "Point," "Peace Sign," "I Love You," "Rock Paper Scissors"
+  1. User speaks to Alexa: "Alexa, turn on Fist" or "Alexa, set hand to Peace mode"
+  2. SinricPro cloud processes command via WebSocket
+  3. ESP32 receives gesture mode string (e.g., "fist", "peace", "point")
+  4. Execute corresponding servo movement pattern
+- **Supported Commands:** 20+ gestures including "Fist," "Point," "Peace," "Hook," "Pinch," "Thumbs Up," "OK," "Love," "Gun," "Rock n Roll," "I Love You," "Rock Paper Scissors"
 
 #### **Mode 3: Closed-Loop Grip**
 
@@ -507,28 +486,34 @@ EMG Signal → Threshold Detection → Debounce (200ms)
 
 - **Arduino IDE** v1.8.19+ ([Download](https://www.arduino.cc/en/software))
 - **ESP32 Board Support** installed via Board Manager
-- **Google Cloud Account** with Speech-to-Text API enabled (Free tier: 60 minutes/month)
+- **SinricPro Account** (Free) - Create at [https://sinric.pro](https://sinric.pro)
+- **Amazon Alexa or Google Home** device (or mobile app)
 - **Wi-Fi Network** with 2.4GHz support (5GHz not recommended for ESP32)
 
 ### **Required Libraries**
 
 Install via Arduino Library Manager (`Sketch → Include Library → Manage Libraries`):
 
-| Library            | Author           | Purpose                              |
-| :----------------- | :--------------- | :----------------------------------- |
-| `ESP32Servo`       | Kevin Harrington | PWM servo control for MG90s motors   |
-| `ArduinoJson`      | Benoit Blanchon  | JSON parsing for API responses       |
-| `INMP441-I2S`      | Especially Hobby | I2S microphone audio capture (PDM)   |
-| `WiFiClientSecure` | Built-in         | HTTPS connection to Google Cloud API |
+| Library            | Author           | Purpose                                  |
+| :----------------- | :--------------- | :--------------------------------------- |
+| `ESP32Servo`       | Kevin Harrington | PWM servo control for MG90s motors       |
+| `SinricPro`        | Boris Jaeger     | IoT cloud integration for voice control  |
+| `WebSockets`       | Markus Sattler   | WebSocket communication with SinricPro   |
+| `ArduinoJson`      | Benoit Blanchon  | JSON parsing for SinricPro messages      |
 
-### **Google Cloud Setup**
+### **SinricPro Setup**
 
-1. Create a [Google Cloud Project](https://console.cloud.google.com/)
-2. Enable **Cloud Speech-to-Text API**
-3. Create a **Service Account** with "Editor" permissions
-4. Generate and download a **JSON key file**
-5. Extract `client_email` and `private_key` from the JSON
-6. Add credentials to the firmware `#define` statements
+1. Create a free account at [https://sinric.pro](https://sinric.pro)
+2. Create a new **Smart Home Device** → Select "Switch" type
+3. Note your credentials:
+   - **APP_KEY** - Found in "Credentials" section
+   - **APP_SECRET** - Found in "Credentials" section  
+   - **DEVICE_ID** - Found in your device settings
+4. Link SinricPro to **Amazon Alexa** or **Google Home**:
+   - Open Alexa/Google Home app
+   - Search for "SinricPro" skill and enable
+   - Discover devices
+5. Add credentials to firmware configuration
 
 ---
 
@@ -566,11 +551,12 @@ cd Krtrimahastah
 Edit [firmware/prosthetic_hand_improved.ino](firmware/prosthetic_hand_improved.ino) and update:
 
 ```cpp
-#define WIFI_SSID           "Your_Wi-Fi_Network_Name"
-#define WIFI_PASS           "Your_Wi-Fi_Password"
+#define WIFI_SSID         "Your_Wi-Fi_Network_Name"
+#define WIFI_PASS         "Your_Wi-Fi_Password"
 
-#define GOOGLE_CLOUD_EMAIL  "your-service@project.iam.gserviceaccount.com"
-#define GOOGLE_CLOUD_KEY    "-----BEGIN PRIVATE KEY-----\nMIIE..."
+#define APP_KEY           "YOUR_SINRIC_APP_KEY"      // From SinricPro Dashboard
+#define APP_SECRET        "YOUR_SINRIC_APP_SECRET"  // From SinricPro Dashboard
+#define DEVICE_ID         "YOUR_DEVICE_ID"          // From your SinricPro device
 ```
 
 ### **Step 4: Upload & Test**
@@ -581,9 +567,10 @@ Edit [firmware/prosthetic_hand_improved.ino](firmware/prosthetic_hand_improved.i
 3. Open Serial Monitor (Tools → Serial Monitor, 115200 baud)
 4. Press Reset button on ESP32
 5. Observe startup messages and Wi-Fi connection
-6. Test voice mode by pressing Push-to-Talk button
-7. Test EMG mode by flexing muscles
-8. Verify all 5 fingers move smoothly
+6. Say "Alexa, discover devices" to find your prosthetic hand
+7. Test voice commands: "Alexa, turn on Fist"
+8. Test EMG mode by flexing muscles
+9. Verify all 5 fingers move smoothly
 ```
 
 ### **Step 5: Calibration**
@@ -609,24 +596,43 @@ Servo Angle Tuning:
 
 ## 📖 Usage Guide
 
-### **Voice Control**
+### **Voice Control (via Alexa/Google Assistant)**
 
 ```
-1. Press and hold the Push-to-Talk button (GPIO 25)
-2. Speak clearly: "Close Fist," "Open Hand," "Point," "Peace," etc.
-3. Release button after speaking
-4. Listen for confirmation beep
-5. Hand executes the gesture
-6. After 3 seconds, returns to neutral position
+1. Say "Alexa, turn on Fist" or "Alexa, set hand to Peace mode"
+2. SinricPro processes command and sends to ESP32
+3. Hand executes the gesture smoothly
+4. Stays in gesture until new command or EMG override
 
-Supported Commands:
-├─ Close/Fist         → All fingers contract
-├─ Open/Spread        → All fingers extend
-├─ Point              → Index finger only
-├─ Peace/Victory      → Index + Middle extended
-├─ Thumbs Up/Okay     → Thumb extended
-├─ Love/ILY           → "I Love You" sign animation
-└─ RPS/Game           → Random Rock/Paper/Scissors shape
+Supported Alexa Commands:
+
+Functional Gestures:
+├─ "Alexa, turn on Fist" or "Grab" or "Close"  → Full grip
+├─ "Alexa, set mode to Hook"                   → Hook grip (all fingers except thumb)
+├─ "Alexa, set mode to Pinch"                  → Precision pinch (thumb + index/middle)
+├─ "Alexa, set mode to Tripod"                 → Tripod grip (3 fingers)
+
+Social Gestures:
+├─ "Alexa, turn on Open" or "Five" or "Paper"  → All fingers extended
+├─ "Alexa, set mode to Point" or "One"         → Index finger pointing
+├─ "Alexa, set mode to Peace" or "Two"         → Peace sign (index + middle)
+├─ "Alexa, set mode to Three"                  → Three fingers up
+├─ "Alexa, set mode to Four"                   → Four fingers up
+├─ "Alexa, set mode to Thumbs Up" or "Like"    → Thumbs up gesture
+├─ "Alexa, set mode to OK"                     → OK sign (thumb + index circle)
+├─ "Alexa, set mode to Love"                   → ILY sign (index + pinky)
+├─ "Alexa, set mode to Gun"                    → Finger gun
+├─ "Alexa, set mode to Rock and Roll"          → Rock hand sign
+├─ "Alexa, set mode to Call"                   → Call me gesture
+├─ "Alexa, set mode to Pinky"                  → Pinky promise
+
+Animations:
+├─ "Alexa, set mode to I Love You"             → I-L-Y animation sequence
+└─ "Alexa, set mode to Rock Paper Scissors"    → Random RPS choice
+
+Control:
+├─ "Alexa, turn on Hand"                       → Enable EMG control
+└─ "Alexa, turn off Hand"                      → Disable EMG control
 ```
 
 ### **EMG Control**
@@ -648,10 +654,14 @@ Gesture Sequence:
 ### **Emergency Stop**
 
 ```
-Press and hold Push-to-Talk button for >5 seconds
+Safety is automatic via FSR sensors:
+→ If FSR detects force > 2000 units, hand opens automatically
 → Triggers SAFETY_STOP state
-→ All fingers open slowly
-→ Hand returns to safe neutral position
+→ All fingers open slowly to safe position
+
+Manual Reset:
+→ Send "Open" command via Alexa
+→ Or use EMG sensor to toggle open
 ```
 
 ---
@@ -717,19 +727,20 @@ Krtrimahastah/
 | Arduino IDE        |       1.8.19+        | ✅ Supported |
 | ESP32 Board        | Arduino-ESP32 2.0.0+ | ✅ Supported |
 | ESP32Servo Library |        0.9.0+        | ✅ Required  |
+| SinricPro Library  |       2.10.0+        | ✅ Required  |
+| WebSockets Library |        2.3.0+        | ✅ Required  |
 | ArduinoJson        |       6.18.0+        | ✅ Required  |
-| Google Cloud API   |      v1p1beta1       | ✅ Supported |
 | MG90s Servo        |       Original       | ✅ Required  |
-| INMP441 Microphone |    I2S compatible    | ✅ Required  |
+| Alexa/Google Home  |         Any          | ✅ Required  |
 
 ---
 
 ## 🎓 Learning Resources
 
 - **ESP32 Documentation:** [https://docs.espressif.com/projects/esp-idf/](https://docs.espressif.com/projects/esp-idf/)
-- **Google Cloud Speech API:** [https://cloud.google.com/speech-to-text/docs](https://cloud.google.com/speech-to-text/docs)
+- **SinricPro Documentation:** [https://sinricpro.github.io/esp8266-esp32-sdk/](https://sinricpro.github.io/esp8266-esp32-sdk/)
 - **Servo Motor Control:** [https://randomnerdtutorials.com/esp32-servo-motor/](https://randomnerdtutorials.com/esp32-servo-motor/)
-- **Arduino Serial Communication:** [https://www.arduino.cc/en/reference/serial](https://www.arduino.cc/en/reference/serial)
+- **Alexa Smart Home Skills:** [https://developer.amazon.com/alexa/smart-home](https://developer.amazon.com/alexa/smart-home)
 
 ---
 
