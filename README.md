@@ -112,16 +112,16 @@ A modular, 3D-printed prosthetic hand that combines:
 
 ### **ESP32 GPIO Pin Allocation**
 
-| Component          | Signal Line        | ESP32 GPIO | Pin Type   | Notes                             |
-| :----------------- | :----------------- | :--------: | :--------- | :-------------------------------- |
-| **SERVO: Thumb**   | PWM Signal         |  GPIO 13   | OUTPUT     | Channel 0, PWM (0-180°)           |
-| **SERVO: Index**   | PWM Signal         |  GPIO 12   | OUTPUT     | Channel 1, PWM (0-180°)           |
-| **SERVO: Middle**  | PWM Signal         |  GPIO 14   | OUTPUT     | Channel 2, PWM (0-180°)           |
-| **SERVO: Ring**    | PWM Signal         |  GPIO 27   | OUTPUT     | Channel 3, PWM (0-180°)           |
-| **SERVO: Pinky**   | PWM Signal         |  GPIO 26   | OUTPUT     | Channel 4, PWM (0-180°)           |
-| **EMG Sensor**     | Analog Output      |  GPIO 34   | ADC1 INPUT | 0-4095 (0-3.3V) muscle signal     |
-| **FSR: Thumb Tip** | Analog Output      |  GPIO 36   | ADC1 INPUT | Pressure sensing (0-2000 units)   |
-| **FSR: Index Tip** | Analog Output      |  GPIO 39   | ADC1 INPUT | Pressure sensing (0-2000 units)   |
+| Component          | Signal Line   | ESP32 GPIO | Pin Type   | Notes                           |
+| :----------------- | :------------ | :--------: | :--------- | :------------------------------ |
+| **SERVO: Thumb**   | PWM Signal    |  GPIO 13   | OUTPUT     | Channel 0, PWM (0-180°)         |
+| **SERVO: Index**   | PWM Signal    |  GPIO 12   | OUTPUT     | Channel 1, PWM (0-180°)         |
+| **SERVO: Middle**  | PWM Signal    |  GPIO 14   | OUTPUT     | Channel 2, PWM (0-180°)         |
+| **SERVO: Ring**    | PWM Signal    |  GPIO 27   | OUTPUT     | Channel 3, PWM (0-180°)         |
+| **SERVO: Pinky**   | PWM Signal    |  GPIO 26   | OUTPUT     | Channel 4, PWM (0-180°)         |
+| **EMG Sensor**     | Analog Output |  GPIO 34   | ADC1 INPUT | 0-4095 (0-3.3V) muscle signal   |
+| **FSR: Thumb Tip** | Analog Output |  GPIO 36   | ADC1 INPUT | Pressure sensing (0-2000 units) |
+| **FSR: Index Tip** | Analog Output |  GPIO 39   | ADC1 INPUT | Pressure sensing (0-2000 units) |
 
 ### **Servo Angle Limits**
 
@@ -146,7 +146,7 @@ graph TB
         EMG["💪 EMG Sensor<br/>Muscle Signals"]
         FSR["🖐️ FSR Sensors<br/>Tactile Feedback"]
     end
-    
+
     subgraph "Processing Layer"
         ESP32["⚙️ ESP32 DevKit<br/>Main Microcontroller<br/>Dual-Core 240MHz"]
         WIFI["📡 Wi-Fi Module<br/>802.11 b/g/n"]
@@ -276,7 +276,7 @@ graph LR
 ### **Hand Assembly Structure**
 
 ![Hand Layout Reference](hardware/3d-models/Hand%20Layout.stl)
-*Reference: Complete hand assembly layout showing all finger components and palm structure*
+_Reference: Complete hand assembly layout showing all finger components and palm structure_
 
 The prosthetic hand consists of **10 3D-printed parts** designed for FDM printing (PLA material):
 
@@ -494,12 +494,12 @@ EMG Signal → Threshold Detection → Debounce (200ms)
 
 Install via Arduino Library Manager (`Sketch → Include Library → Manage Libraries`):
 
-| Library            | Author           | Purpose                                  |
-| :----------------- | :--------------- | :--------------------------------------- |
-| `ESP32Servo`       | Kevin Harrington | PWM servo control for MG90s motors       |
-| `SinricPro`        | Boris Jaeger     | IoT cloud integration for voice control  |
-| `WebSockets`       | Markus Sattler   | WebSocket communication with SinricPro   |
-| `ArduinoJson`      | Benoit Blanchon  | JSON parsing for SinricPro messages      |
+| Library       | Author           | Purpose                                 |
+| :------------ | :--------------- | :-------------------------------------- |
+| `ESP32Servo`  | Kevin Harrington | PWM servo control for MG90s motors      |
+| `SinricPro`   | Boris Jaeger     | IoT cloud integration for voice control |
+| `WebSockets`  | Markus Sattler   | WebSocket communication with SinricPro  |
+| `ArduinoJson` | Benoit Blanchon  | JSON parsing for SinricPro messages     |
 
 ### **SinricPro Setup**
 
@@ -507,7 +507,7 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
 2. Create a new **Smart Home Device** → Select "Switch" type
 3. Note your credentials:
    - **APP_KEY** - Found in "Credentials" section
-   - **APP_SECRET** - Found in "Credentials" section  
+   - **APP_SECRET** - Found in "Credentials" section
    - **DEVICE_ID** - Found in your device settings
 4. Link SinricPro to **Amazon Alexa** or **Google Home**:
    - Open Alexa/Google Home app
