@@ -5,7 +5,7 @@
 
 **Krtrimahastah** (Sanskrit for _Artificial Hand_) is an open-source, affordable, and intelligent prosthetic arm designed to bridge the gap between expensive bionic limbs and passive cosmetic devices.
 
-By leveraging 3D printing, the ESP32 microcontroller, cloud AI integration, and affordable hobbyist components, this project delivers a fully functional, multi-modal assistive device for under **$100 USD**.
+By leveraging 3D printing, the ESP32 microcontroller, AI integration, and affordable hobbyist components, this project delivers a fully functional, multi-modal assistive device for under **$100 USD**.
 
 🎥 **[Project Demo Video](https://youtu.be/BNZyQIecj14)**
 
@@ -47,7 +47,6 @@ By leveraging 3D printing, the ESP32 microcontroller, cloud AI integration, and 
 
 ### ⚡ **Power Management Innovation**
 
-- **Solves the "Xiaomi Hack":** Overcomes standard power bank low-current shutdown issues common with microcontroller applications
 - **All-Day Portability:** 20000mAh Xiaomi 4i power bank with optimized power splitting:
   - **High-Power Rail:** 5V for servo actuation (high current spikes)
   - **Logic Rail:** 3.3V via ESP32 regulator (low current, noise-isolated)
@@ -73,14 +72,14 @@ By leveraging 3D printing, the ESP32 microcontroller, cloud AI integration, and 
 
 ### **Problem Statement**
 
-Prosthetic limbs remain inaccessible to the majority due to prohibitive costs ($20,000-$100,000+). This project demonstrates that functional bionic devices can be built affordably using modern open-source hardware and cloud AI.
+Prosthetic limbs remain inaccessible to the majority due to prohibitive costs ($3,000-$100,000+). This project demonstrates that functional bionic devices can be built affordably using modern open-source hardware and AI.
 
 ### **Solution**
 
 A modular, 3D-printed prosthetic hand that combines:
 
 - **Affordable actuation:** MG90s servo motors instead of expensive linear actuators
-- **Intelligent control:** Cloud-based natural language processing with offline fallback
+- **Intelligent control:** AI-based natural language processing with offline fallback
 - **Biological feedback:** FSR-based haptic sensing for dexterous manipulation
 - **Energy efficiency:** Optimized power management for all-day wearability
 
@@ -90,20 +89,17 @@ A modular, 3D-printed prosthetic hand that combines:
 
 ### **Bill of Materials (BOM)**
 
-| Component                     | Quantity | Supplier           | Function                                               | Est. Cost (USD) |
-| :---------------------------- | :------: | :----------------- | :----------------------------------------------------- | :-------------: |
-| **ESP32 DevKit V1**           |    1     | Amazon/Aliexpress  | Main microcontroller (32-bit dual-core, Wi-Fi/BLE)     |       $12       |
-| **MG90s Servo Motor**         |    5     | Hobbyist Retailers | Individual finger actuators (180° range, 1.5kg torque) |       $25       |
-| **SinricPro Account**         |    1     | Free (sinric.pro)  | IoT cloud service for voice control integration        |      FREE       |
-| **EMG Sensor Module V3.0**    |    1     | Amazon             | Muscle signal acquisition (3-channel, 10-bit ADC)      |       $20       |
-| **FSR402 Pressure Sensor**    |    2     | Adafruit/Sparkfun  | Tactile feedback in thumb & index finger               |       $8        |
-| **Xiaomi Power Bank 4i**      |    1     | Amazon             | 20000mAh portable battery with dual USB-A output       |       $25       |
-| **Breadboard & Jumper Wires** |    1     | Amazon             | Prototyping & connections                              |       $5        |
-| **Tactile Pushbutton**        |    1     | Electronics Store  | Push-to-Talk trigger for voice mode                    |       $1        |
-| **3D Printed Parts**          |    —     | FDM Printer        | PLA chassis (hand, phalanges, forearm cover)           |       $3        |
-| **Servo Horns & Hardware**    |    —     | Included           | Servo linkages & fasteners                             |       $2        |
-| **USB-C Cable & Connectors**  |    1     | Stock              | Power delivery & debugging                             |       $2        |
-|                               |          |                    | **TOTAL ESTIMATED COST**                               |    **~$103**    |
+| Component                     | Quantity | Function                                               |
+| :---------------------------- | :------: | :----------------------------------------------------- |
+| **ESP32 DevKit V1**           |    1     | Main microcontroller (32-bit dual-core, Wi-Fi/BLE)     |
+| **MG90s Servo Motor**         |    5     | Individual finger actuators (180° range, 1.5kg torque) |
+| **SinricPro Account**         |    1     | IoT cloud service for voice control integration        |
+| **EMG Sensor Module V3.0**    |    1     | Muscle signal acquisition (3-channel, 10-bit ADC)      |
+| **FSR402 Pressure Sensor**    |    2     | Tactile feedback in thumb & index finger               |
+| **Breadboard & Jumper Wires** |    —     | Prototyping & connections                              |
+| **3D Printed Parts**          |    —     | PLA chassis (hand, phalanges, forearm cover)           |
+| **Servo Horns & Hardware**    |    —     | Servo linkages & fasteners                             |
+| **USB-C Cable & Connectors**  |    —     | Power delivery & debugging                             |
 
 ---
 
@@ -124,13 +120,13 @@ A modular, 3D-printed prosthetic hand that combines:
 
 ### **Servo Angle Limits**
 
-| Finger | Min Angle (Open) | Max Angle (Closed) | Movement Range | Comments                           |
-| :----- | :--------------: | :----------------: | :------------: | :--------------------------------- |
-| Thumb  |        0°        |        120°        |      120°      | Opposable digit with limited range |
-| Index  |        0°        |        175°        |      175°      | Full extension to curl             |
-| Middle |        0°        |        175°        |      175°      | Full extension to curl             |
-| Ring   |        0°        |        175°        |      175°      | Full extension to curl             |
-| Pinky  |        0°        |        175°        |      175°      | Full extension to curl             |
+| Finger | Min Angle (Open) | Max Angle (Closed) | Movement Range |
+| :----- | :--------------: | :----------------: | :------------: |
+| Thumb  |        0°        |        120°        |      120°      |
+| Index  |        0°        |        175°        |      175°      |
+| Middle |        0°        |        175°        |      175°      |
+| Ring   |        0°        |        175°        |      175°      |
+| Pinky  |        0°        |        175°        |      175°      |
 
 ---
 
@@ -227,10 +223,10 @@ stateDiagram-v2
 
 ```mermaid
 sequenceDiagram
-    User->>Google Assistant: Speak voice command<br/>("Hey Google, turn on Fist")
+    User->>Google Assistant: Speak voice command<br/>("Hey Google, turn on Prosthetic Hand")
     Google Assistant->>SinricPro: Process & forward command
     SinricPro->>ESP32: Send gesture command via WebSocket
-    ESP32->>ESP32: Parse mode command<br/>(e.g., "fist", "peace", "point")
+    ESP32->>ESP32: Parse mode command<br/>(e.g., "Prosthetic Hand", "peace", "point")
     ESP32->>SERVO_CTRL: Calculate target angles
     SERVO_CTRL->>THUMB: Write PWM signal (GPIO 13)
     SERVO_CTRL->>INDEX: Write PWM signal (GPIO 12)
@@ -451,11 +447,11 @@ EMG Signal → Threshold Detection → Debounce (200ms)
 
 - **Activation:** Voice command via Alexa or Google Assistant
 - **Processing Pipeline:**
-  1. User speaks to Google Assistant: "Hey Google, turn on Fist" or "Hey Google, set hand to Peace mode"
+  1. User speaks to Google Assistant: "Hey Google, turn on Prosthetic Hand" or "Hey Google, set hand to Peace mode"
   2. SinricPro cloud processes command via WebSocket
   3. ESP32 receives gesture mode string (e.g., "fist", "peace", "point")
   4. Execute corresponding servo movement pattern
-- **Supported Commands:** 20+ gestures including "Fist," "Point," "Peace," "Hook," "Pinch," "Thumbs Up," "OK," "Love," "Gun," "Rock n Roll," "I Love You," "Rock Paper Scissors"
+- **Supported Commands:** 20+ gestures including "Prosthetic Hand," "Point," "Peace," "Hook," "Pinch," "Thumbs Up," "OK," "Love," "Gun," "Rock n Roll," "I Love You," "Rock Paper Scissors"
 
 #### **Mode 3: Closed-Loop Grip**
 
@@ -568,7 +564,7 @@ Edit [firmware/prosthetic_hand_improved.ino](firmware/prosthetic_hand_improved.i
 4. Press Reset button on ESP32
 5. Observe startup messages and Wi-Fi connection
 6. Say "Hey Google, discover devices" to find your prosthetic hand
-7. Test voice commands: "Hey Google, turn on Fist"
+7. Test voice commands: "Hey Google, turn on Prosthetic Hand"
 8. Test EMG mode by flexing muscles
 9. Verify all 5 fingers move smoothly
 ```
@@ -587,8 +583,8 @@ FSR Sensor Tuning:
 └─ Test grip on soft object to verify cutoff
 
 Servo Angle Tuning:
-├─ Adjust MAX_TP (thumb angle) for comfort
-├─ Adjust MAX_OTHERS (finger angle) for dexterity
+├─ Adjust MAX_TP (thumb & pinky angle) for comfort
+├─ Adjust MAX_OTHERS (index, middle, ring finger angle) for dexterity
 └─ Test all gestures for smooth motion
 ```
 
@@ -599,7 +595,7 @@ Servo Angle Tuning:
 ### **Voice Control (via Alexa/Google Assistant)**
 
 ```
-1. Say "Hey Google, turn on Fist" or "Hey Google, set hand to Peace mode"
+1. Say "Hey Google, turn on Prosthetic Hand" or "Hey Google, set hand to Peace mode"
 2. SinricPro processes command and sends to ESP32
 3. Hand executes the gesture smoothly
 4. Stays in gesture until new command or EMG override
@@ -607,7 +603,7 @@ Servo Angle Tuning:
 Supported Hey Google Commands:
 
 Functional Gestures:
-├─ "Hey Google, turn on Fist" or "Grab" or "Close"  → Full grip
+├─ "Hey Google, turn on Prosthetic Hand" or "Grab" or "Close"  → Full grip
 ├─ "Hey Google, set mode to Hook"                   → Hook grip (all fingers except thumb)
 ├─ "Hey Google, set mode to Pinch"                  → Precision pinch (thumb + index/middle)
 ├─ "Hey Google, set mode to Tripod"                 → Tripod grip (3 fingers)
