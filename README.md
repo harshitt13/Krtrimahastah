@@ -35,7 +35,7 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 
 ### 🎯 **Multi-Modal Control System**
 
-- **Voice Commands (Primary):** Integrated with SinricPro IoT platform for natural language voice control via Alexa/Google Assistant
+- **Voice Commands (Primary):** Integrated with SinricPro IoT platform for voice control via Alexa/Google Assistant
 - **EMG Muscle Signals (Secondary):** Backup EMG-based control for silent/offline operation with binary toggle (Open ↔ Close)
 - **Smart Home Integration:** Connect to Amazon Alexa or Google Home for hands-free gesture commands
 
@@ -47,7 +47,7 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 
 ### ⚡ **Power Management Innovation**
 
-- **All-Day Portability:** 20000mAh Xiaomi 4i power bank with optimized power splitting:
+- **All-Day Portability:** Power bank with optimized power splitting:
   - **High-Power Rail:** 5V for servo actuation (high current spikes)
   - **Logic Rail:** 3.3V via ESP32 regulator (low current, noise-isolated)
 
@@ -79,7 +79,7 @@ Prosthetic limbs remain inaccessible to the majority due to prohibitive costs ($
 A modular, 3D-printed prosthetic hand that combines:
 
 - **Affordable actuation:** MG90s servo motors instead of expensive linear actuators
-- **Intelligent control:** AI-based natural language processing with offline fallback
+- **Intelligent control:** AI-based language processing with offline fallback
 - **Biological feedback:** FSR-based haptic sensing for dexterous manipulation
 - **Energy efficiency:** Optimized power management for all-day wearability
 
@@ -137,35 +137,35 @@ A modular, 3D-printed prosthetic hand that combines:
 ```mermaid
 graph TB
     subgraph "Input Layer"
-        VOICE["🎤 Voice Input<br/>Alexa/Google Assistant"]
-        EMG["💪 EMG Sensor<br/>Muscle Signals"]
-        FSR["🖐️ FSR Sensors<br/>Tactile Feedback"]
+        VOICE["Voice Input<br/>Alexa/Google Assistant"]
+        EMG["EMG Sensor<br/>Muscle Signals"]
+        FSR["FSR Sensors<br/>Tactile Feedback"]
     end
 
     subgraph "Processing Layer"
-        ESP32["⚙️ ESP32 DevKit<br/>Main Microcontroller<br/>Dual-Core 240MHz"]
-        WIFI["📡 Wi-Fi Module<br/>802.11 b/g/n"]
-        SINRIC["☁️ SinricPro<br/>IoT Cloud Service"]
+        ESP32["ESP32 DevKit<br/>Main Microcontroller<br/>Dual-Core 240MHz"]
+        WIFI["Wi-Fi Module<br/>802.11 b/g/n"]
+        SINRIC["SinricPro<br/>IoT Cloud Service"]
     end
 
     subgraph "Control Logic"
-        FSM["🔄 State Machine<br/>5 Operating Modes"]
-        SERVO_CTRL["🎮 Servo Controller<br/>PWM Generator"]
-        SAFETY["🔒 Safety Module<br/>Watchdog & Limits"]
+        FSM["State Machine<br/>5 Operating Modes"]
+        SERVO_CTRL["Servo Controller<br/>PWM Generator"]
+        SAFETY["Safety Module<br/>Watchdog & Limits"]
     end
 
     subgraph "Output Layer"
-        THUMB["👍 Thumb Servo<br/>GPIO 13"]
-        INDEX["☝️ Index Servo<br/>GPIO 12"]
-        MIDDLE["🖕 Middle Servo<br/>GPIO 14"]
-        RING["💍 Ring Servo<br/>GPIO 27"]
-        PINKY["🤙 Pinky Servo<br/>GPIO 26"]
+        THUMB["Thumb Servo<br/>GPIO 13"]
+        INDEX["Index Servo<br/>GPIO 12"]
+        MIDDLE["Middle Servo<br/>GPIO 14"]
+        RING["Ring Servo<br/>GPIO 27"]
+        PINKY["Pinky Servo<br/>GPIO 26"]
     end
 
     subgraph "Power Distribution"
-        BATTERY["🔋 Xiaomi Power Bank<br/>20000mAh"]
-        SERVO_RAIL["⚡ Servo Rail (5V)<br/>High Current"]
-        LOGIC_RAIL["⚡ Logic Rail (3.3V)<br/>Low Noise"]
+        BATTERY["Power Bank"]
+        SERVO_RAIL["Servo Rail (5V)<br/>High Current"]
+        LOGIC_RAIL["Logic Rail (3.3V)<br/>Low Noise"]
     end
 
     VOICE --> SINRIC
@@ -242,7 +242,7 @@ sequenceDiagram
 
 ```mermaid
 graph LR
-    BATTERY["🔋 Xiaomi 4i<br/>20000mAh<br/>Dual USB Output"]
+    BATTERY["<br/>Dual USB Output"]
 
     USB1["USB Port 1<br/>5V Output"]
     USB2["USB Port 2<br/>5V Output"]
@@ -276,18 +276,15 @@ _Reference: Complete hand assembly layout showing all finger components and palm
 
 The prosthetic hand consists of **10 3D-printed parts** designed for FDM printing (PLA material):
 
-| Component           | File Name               | Purpose                                          | Print Time | Material  |
-| :------------------ | :---------------------- | :----------------------------------------------- | :--------: | :-------: |
-| **Hand Layout**     | `Hand Layout.stl`       | Main reference assembly drawing                  |     —      | Reference |
-| **Palm/Metacarpal** | `Hand.stl`              | Central palm structure housing servo mounts      |  2-3 hrs   |    PLA    |
-| **Thumb Digit**     | `Finger_Thumb.stl`      | Opposable thumb with servo horn slot             |   45 min   |    PLA    |
-| **Index Finger**    | `Finger_Index.stl`      | Index finger phalanges & servo linkage           |    1 hr    |    PLA    |
-| **Middle Finger**   | `Finger_Middle.stl`     | Middle finger phalanges & servo linkage          |    1 hr    |    PLA    |
-| **Ring Finger**     | `Finger_Ring.stl`       | Ring finger phalanges & servo linkage            |    1 hr    |    PLA    |
-| **Pinky Finger**    | `Finger_Pinky.stl`      | Pinky finger phalanges & servo linkage           |   45 min   |    PLA    |
-| **Arm Cover**       | `Arm_Cover.stl`         | Protective forearm shell & electronics enclosure |  1-2 hrs   |    PLA    |
-| **Print Layout 1**  | `Hand_print_layout.stl` | Optimized 2D nesting for print bed               |     —      | Reference |
-| **Print Layout 2**  | `Right_Hand.stl`        | Mirror version (left/right compatibility)        |     —      | Reference |
+| Component           | File Name               | Material  |
+| :------------------ | :---------------------- | :-------: |
+| **Palm/Metacarpal** | `Hand.stl`              |    PLA    |
+| **Thumb Digit**     | `Finger_Thumb.stl`      |    PLA    |
+| **Index Finger**    | `Finger_Index.stl`      |    PLA    |
+| **Middle Finger**   | `Finger_Middle.stl`     |    PLA    |
+| **Ring Finger**     | `Finger_Ring.stl`       |    PLA    |
+| **Pinky Finger**    | `Finger_Pinky.stl`      |    PLA    |
+| **Arm Cover**       | `Arm_Cover.stl`         |    PLA    |
 
 ### **3D Printing Recommendations**
 
@@ -307,12 +304,12 @@ Printer Settings:
 
 1. Print all components with support structures
 2. Remove supports carefully (palm/finger joints are delicate)
-3. Use M3 bolts & nuts to attach servos to palm housing
-4. Connect servo horns to finger linkages via push-fit connectors
-5. Assemble fingers and attach to palm pivot points
+3. Assemble fingers and attch to plam pivto points using 0.5mm fishing wire (for retarcking) and 2mm elastic string (for flexibility) 
+4. Use super glue attach servos in palm housing
+5. Connect servo horns to finger linkages via fishing wire
 6. Mount arm cover shell with servo motor peeking through rear cavity
-7. Route wiring through forearm tube to electronics enclosure
-8. Perform mechanical range-of-motion test before powering
+7. Route wiring through forearm to the circuit
+8. Perform mechanical range-of-motion test before powering (zeroing all the motors while fingers are opened)
 
 ---
 
@@ -320,24 +317,24 @@ Printer Settings:
 
 ### **Connection Matrix: Sensors ↔ ESP32**
 
-**Detailed wiring documentation available in:** [hardware/wiring/Wire Mapping for the Development of a Low-Cost Prosthetic Hand (1).xlsx](hardware/wiring/Wire%20Mapping%20for%20the%20Development%20of%20a%20Low-Cost%20Prosthetic%20Hand%20%281%29.xlsx)
+**Detailed wiring documentation available in:** [hardware/wiring/Wire Mapping for the Development of a Low-Cost Prosthetic Hand.xlsx](hardware/wiring/Wire%20Mapping%20for%20the%20Development%20of%20a%20Low-Cost%20Prosthetic%20Hand%20%281%29.xlsx)
 
 ### **Quick Wire Reference (5V Servos)**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    SERVO CONNECTIONS                         │
-├──────────────┬──────────┬──────────┬──────────────────────────┤
-│ Servo Motor  │ Color    │ ESP32    │ Function                 │
-├──────────────┼──────────┼──────────┼──────────────────────────┤
-│ Thumb        │ Orange   │ GPIO 13  │ PWM Output (1500µs mid)  │
-│ Index        │ Yellow   │ GPIO 12  │ PWM Output (1500µs mid)  │
-│ Middle       │ Green    │ GPIO 14  │ PWM Output (1500µs mid)  │
-│ Ring         │ Blue     │ GPIO 27  │ PWM Output (1500µs mid)  │
-│ Pinky        │ Purple   │ GPIO 26  │ PWM Output (1500µs mid)  │
-│ GND (All)    │ Black    │ GND      │ Common ground            │
-│ +5V (All)    │ Red      │ +5V Rail │ Servo power rail         │
-└──────────────┴──────────┴──────────┴──────────────────────────┘
+┌─────────────────────────────────────────────┐
+│              SERVO CONNECTIONS              │
+├──────────────┬──────────┬───────────────────┤
+│ Servo Motor  │ ESP32    │ Function          │
+├──────────────┼──────────┼───────────────────┤
+│ Thumb        │ GPIO 13  │ PWM Output        │
+│ Index        │ GPIO 12  │ PWM Output        │
+│ Middle       │ GPIO 14  │ PWM Output        │
+│ Ring         │ GPIO 27  │ PWM Output        │
+│ Pinky        │ GPIO 26  │ PWM Output        │
+│ GND (All)    │ GND      │ Common ground     │
+│ +5V (All)    │ +5V Rail │ Servo power rail  │
+└──────────────┴──────────┴───────────────────┘
 ```
 
 ### **Sensor Wire Connections**
@@ -352,7 +349,7 @@ Printer Settings:
 │ FSR Thumb        │ SIG      │ GPIO 36  │ Analog Input (ADC) │
 │ FSR Index        │ SIG      │ GPIO 39  │ Analog Input (ADC) │
 │ All Sensors      │ GND      │ GND      │ Common ground      │
-│ All Sensors      │ +3.3V    │ 3.3V    │ Logic power        │
+│ All Sensors      │ +3.3V    │ 3.3V     │ Logic power        │
 └──────────────────┴──────────┴──────────┴────────────────────┘
 ```
 
@@ -378,23 +375,23 @@ Alexa/Google Assistant → SinricPro Cloud → WebSocket → ESP32
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                    POWER DISTRIBUTION SYSTEM                      │
+│                    POWER DISTRIBUTION SYSTEM                     │
 ├──────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  Xiaomi Power Bank 4i (20000mAh, Dual Output)                    │
-│  ├─ USB Port 1 (5V, 1A) ──► SERVO POWER RAIL (5V, 500mA+)       │
+│                                                                  │
+│  Power Bank (Dual Output)                                        │
+│  ├─ USB Port 1 (5V, 3A) ──► SERVO POWER RAIL (5V, 500mA+)        │
 │  │                         ├─► MG90s Servo 1 (GPIO 13)           │
 │  │                         ├─► MG90s Servo 2 (GPIO 12)           │
 │  │                         ├─► MG90s Servo 3 (GPIO 14)           │
 │  │                         ├─► MG90s Servo 4 (GPIO 27)           │
 │  │                         └─► MG90s Servo 5 (GPIO 26)           │
-│  │                                                                │
-│  └─ USB Port 2 (5V, 1A) ──► LOGIC POWER RAIL (3.3V via ESP32)   │
-│                             ├─ ESP32 DevKit (Voltage Regulator)  │
-│                             │  ├─ Wi-Fi Module (SinricPro)       │
-│                             │  ├─ EMG Sensor V3.0                │
-│                             │  └─ FSR402 Sensors (×2)            │
-│                                                                   │
+│  │                                                               │
+│  └─ USB Port 2 (3.3V, 1A) ──► LOGIC POWER RAIL (3.3V via ESP32)  │
+│                              ├─ ESP32 DevKit (Voltage Regulator) │
+│                              │  ├─ Wi-Fi Module (SinricPro)      │
+│                              │  ├─ EMG Sensor V3.0               │
+│                              │  └─ FSR402 Sensors (×2)           │
+│                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -406,21 +403,21 @@ Alexa/Google Assistant → SinricPro Cloud → WebSocket → ESP32
 ├────────────────────────────────────────────────────────┤
 │                                                        │
 │ SERVO RAIL (5V):                                       │
-│  • Idle (all open):        25-50mA    (~250mW)       │
-│  • Single servo active:   100-150mA   (~750mW)       │
-│  • All servos moving:     400-600mA   (~3W)          │
-│  • Peak grip (all tight):  600-800mA  (~4W)          │
+│  • Idle (all open):        25-50mA    (~250mW)         │
+│  • Single servo active:   100-150mA   (~750mW)         │
+│  • All servos moving:     400-600mA   (~3W)            │
+│  • Peak grip (all tight):  600-800mA  (~4W)            │
 │                                                        │
-│ LOGIC RAIL (3.3V @ ESP32):                            │
-│  • ESP32 idle:             80-100mA                   │
-│  • Wi-Fi active:          150-200mA (peak)           │
-│  • EMG + FSR Sensors:      10-15mA                    │
-│  • Total logic:            140-220mA                  │
+│ LOGIC RAIL (3.3V @ ESP32):                             │
+│  • ESP32 idle:             80-100mA                    │
+│  • Wi-Fi active:          150-200mA (peak)             │
+│  • EMG + FSR Sensors:      10-15mA                     │
+│  • Total logic:            140-220mA                   │
 │                                                        │
-│ BATTERY RUNTIME (Estimated):                          │
-│  • Idle (servos open):     ~100 hours                 │
-│  • Mixed use (50% active): ~12-15 hours              │
-│  • Heavy use (all moving): ~5-7 hours                 │
+│ BATTERY RUNTIME (Estimated):                           │
+│  • Idle (servos open):     ~100 hours                  │
+│  • Mixed use (50% active): ~12-15 hours                │
+│  • Heavy use (all moving): ~5-7 hours                  │
 │                                                        │
 └────────────────────────────────────────────────────────┘
 ```
@@ -524,7 +521,7 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
 4. Solder power supply rails on breadboard (5V servo, 3.3V logic)
 5. Wire all components according to Master Pinout (see Wire Mapping section)
 6. Mount ESP32 DevKit inside arm cover
-7. Connect Xiaomi power bank via USB cables
+7. Connect power bank via USB cables
 8. Perform visual inspection for short circuits
 ```
 
