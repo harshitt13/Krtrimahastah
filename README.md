@@ -114,7 +114,7 @@ A modular, 3D-printed prosthetic hand that combines:
 | **SERVO: Middle**  | PWM Signal    |  GPIO 14   | OUTPUT     | Channel 2, PWM (0-180°)         |
 | **SERVO: Ring**    | PWM Signal    |  GPIO 27   | OUTPUT     | Channel 3, PWM (0-180°)         |
 | **SERVO: Pinky**   | PWM Signal    |  GPIO 26   | OUTPUT     | Channel 4, PWM (0-180°)         |
-| **EMG Sensor**     | Analog Output |  GPIO 34   | ADC1 INPUT | 0-4095 (0-3.3V) muscle signal   |
+| **EMG Sensor**     | Analog Output |  GPIO 34   | ADC1 INPUT | 0-4095 (3.5-18V) muscle signal  |
 | **FSR: Thumb Tip** | Analog Output |  GPIO 36   | ADC1 INPUT | Pressure sensing (0-2000 units) |
 | **FSR: Index Tip** | Analog Output |  GPIO 39   | ADC1 INPUT | Pressure sensing (0-2000 units) |
 
@@ -191,7 +191,8 @@ graph TB
     SERVO_RAIL --> RING
     SERVO_RAIL --> PINKY
     LOGIC_RAIL --> ESP32
-    LOGIC_RAIL --> EMG
+    LOGIC_RAIL --> FSR
+    SERVO_RAIL --> EMG
 ```
 
 ### **Control Flow & State Machine Diagram**
@@ -206,12 +207,6 @@ stateDiagram-v2
     EMG_CONTROL --> GESTURE: EMG muscle flex detected
 
     GESTURE --> EMG_CONTROL: Gesture complete
-
-    EMG_CONTROL --> ANIMATION_ILY: "I love you" command
-    ANIMATION_ILY --> EMG_CONTROL: Animation complete
-
-    EMG_CONTROL --> ANIMATION_RPS: "Rock-Paper-Scissors" command
-    ANIMATION_RPS --> EMG_CONTROL: Choice made
 
     EMG_CONTROL --> SAFETY_STOP: FSR limit exceeded<br/>OR EMG overload<br/>OR Watchdog timeout
     SAFETY_STOP --> EMG_CONTROL: User releases grip<br/>Safety reset triggered
@@ -247,12 +242,12 @@ graph LR
     USB1["USB Port 1<br/>5V Output"]
     USB2["USB Port 2<br/>5V Output"]
 
-    SERVO_POWER["⚡ Servo Rail Breadboard<br/>5V Direct<br/>500mA+"]
-    LOGIC_POWER["⚡ Logic Rail Breadboard<br/>5V → ESP32 Regulator<br/>→ 3.3V<br/>100mA clean"]
+    SERVO_POWER["Servo Rail Breadboard<br/>5V Direct<br/>500mA+"]
+    LOGIC_POWER["Logic Rail Breadboard<br/>5V → ESP32 Regulator<br/>→ 3.3V<br/>100mA clean"]
 
-    SERVO_DRAWS["Servo Power Draws:<br/>• Idle: 5-10mA/servo<br/>• Active: 100-200mA/servo<br/>• Peak: 500mA (all 5)"]
+    SERVO_DRAWS["Servo Power Draws:<br/>• Idle: 5-10mA/servo + EMG<br/>• Active: 100-200mA/servo<br/>• Peak: 500mA (all 5)"]
 
-    LOGIC_DRAWS["Logic Power Draws:<br/>• ESP32: 80-160mA<br/>• EMG + FSR: 10-15mA<br/>• Total: ~140mA"]
+    LOGIC_DRAWS["Logic Power Draws:<br/>• ESP32: 80-160mA<br/>• FSR: 10-15mA<br/>• Total: ~140mA"]
 
     BATTERY --> USB1
     BATTERY --> USB2
@@ -261,8 +256,6 @@ graph LR
     SERVO_POWER --> SERVO_DRAWS
     LOGIC_POWER --> LOGIC_DRAWS
 
-    style SERVO_DRAWS fill:#ffcccc
-    style LOGIC_DRAWS fill:#ccffcc
 ```
 
 ---
@@ -274,7 +267,7 @@ graph LR
 ![Hand Layout Reference](hardware/3d-models/Hand%20Layout.stl)
 _Reference: Complete hand assembly layout showing all finger components and palm structure_
 
-The prosthetic hand consists of **10 3D-printed parts** designed for FDM printing (PLA material):
+The prosthetic hand consists of **8 3D-printed parts** designed for FDM printing (PLA material):
 
 | Component           | File Name               | Material  |
 | :------------------ | :---------------------- | :-------: |
@@ -285,6 +278,7 @@ The prosthetic hand consists of **10 3D-printed parts** designed for FDM printin
 | **Ring Finger**     | `Finger_Ring.stl`       |    PLA    |
 | **Pinky Finger**    | `Finger_Pinky.stl`      |    PLA    |
 | **Arm Cover**       | `Arm_Cover.stl`         |    PLA    |
+| **Right Hand**      | `Right_Hand.stl`        |    PLA    |
 
 ### **3D Printing Recommendations**
 
@@ -293,10 +287,10 @@ Printer Settings:
 ├─ Nozzle Temperature: 210°C (PLA)
 ├─ Bed Temperature: 60°C
 ├─ Layer Height: 0.2mm (0.1mm for finger tips for detail)
-├─ Infill: 20% (gyroid pattern for strength/weight ratio)
+├─ Infill: 40% (gyroid pattern for strength/weight ratio)
 ├─ Support: Yes (especially for finger undercuts)
 ├─ Print Speed: 50mm/s
-├─ Total Print Time: ~8-10 hours
+├─ Total Print Time: ~40 hours
 └─ Material Weight: ~250g PLA filament
 ```
 
@@ -349,7 +343,8 @@ Printer Settings:
 │ FSR Thumb        │ SIG      │ GPIO 36  │ Analog Input (ADC) │
 │ FSR Index        │ SIG      │ GPIO 39  │ Analog Input (ADC) │
 │ All Sensors      │ GND      │ GND      │ Common ground      │
-│ All Sensors      │ +3.3V    │ 3.3V     │ Logic power        │
+│ EMG Sensors (+ve)│ +5V      │ +5V Rail │ Servo power rail   │
+│ Both FSR Sensors │ +3.3V    │ 3.3V     │ Logic power        │
 └──────────────────┴──────────┴──────────┴────────────────────┘
 ```
 
@@ -448,7 +443,7 @@ EMG Signal → Threshold Detection → Debounce (200ms)
   2. SinricPro cloud processes command via WebSocket
   3. ESP32 receives gesture mode string (e.g., "fist", "peace", "point")
   4. Execute corresponding servo movement pattern
-- **Supported Commands:** 20+ gestures including "Prosthetic Hand," "Point," "Peace," "Hook," "Pinch," "Thumbs Up," "OK," "Love," "Gun," "Rock n Roll," "I Love You," "Rock Paper Scissors"
+- **Supported Commands:** 20+ gestures including "Prosthetic Hand," "Point," "Peace," "Hook," "Thumbs Up," "OK," "Gun,"
 
 #### **Mode 3: Closed-Loop Grip**
 
@@ -458,26 +453,13 @@ EMG Signal → Threshold Detection → Debounce (200ms)
   - Once force exceeds threshold (2000 units), grip stops tightening
   - Maintains constant pressure automatically
 
-#### **Mode 4: Custom Animations**
-
-- **I Love You:** Sequential finger extension with timing
-- **Rock-Paper-Scissors:** Randomized hand shape selection
-
-#### **Mode 5: Safety Shutdown**
-
-- **Triggers:**
-  - FSR overload (detected crush force)
-  - EMG sensor saturation (noise/interference)
-  - Watchdog timer expiration (10 seconds)
-- **Action:** Immediately open hand to safe position; log error to serial
-
 ---
 
 ## 💻 Software Setup
 
 ### **Prerequisites**
 
-- **Arduino IDE** v1.8.19+ ([Download](https://www.arduino.cc/en/software))
+- **Arduino IDE** ([Download](https://www.arduino.cc/en/software))
 - **ESP32 Board Support** installed via Board Manager
 - **SinricPro Account** (Free) - Create at [https://sinric.pro](https://sinric.pro)
 - **Amazon Alexa or Google Home** device (or mobile app)
@@ -536,20 +518,19 @@ cd Krtrimahastah
 1. File → Open → firmware/prosthetic_hand_improved.ino
 2. Board: ESP32 Dev Module
 3. Port: COM3 (or your ESP32 port)
-4. Upload Speed: 115200
 ```
 
 ### **Step 3: Configure Credentials**
 
-Edit [firmware/prosthetic_hand_improved.ino](firmware/prosthetic_hand_improved.ino) and update:
+Edit [main/main.ino](main/main.ino) and update:
 
 ```cpp
 #define WIFI_SSID         "Your_Wi-Fi_SSID"
 #define WIFI_PASS         "Your_Wi-Fi_Password"
 
-#define APP_KEY           "YOUR_APP_KEY"      // From SinricPro Dashboard
+#define APP_KEY           "YOUR_APP_KEY"     // From SinricPro Dashboard
 #define APP_SECRET        "YOUR_APP_SECRET"  // From SinricPro Dashboard
-#define DEVICE_ID         "YOUR_DEVICE_ID"          // From your SinricPro device
+#define DEVICE_ID         "YOUR_DEVICE_ID"   // From your SinricPro device
 ```
 
 ### **Step 4: Upload & Test**
@@ -571,17 +552,16 @@ Edit [firmware/prosthetic_hand_improved.ino](firmware/prosthetic_hand_improved.i
 ```cpp
 EMG Sensor Tuning:
 ├─ Flex muscle & note ADC reading
-├─ Set EMG_OPEN_THR to 1/2 of reading
-└─ Set EMG_CLOSE_THR to 3/4 of reading
+└─ Set EMG_THReshold to ADC reading
 
 FSR Sensor Tuning:
 ├─ Press fingertip & note ADC reading
-├─ Set FSR_LIMIT to safe threshold (default 2000)
+├─ Set FSR_LIMIT to safe threshold (default 4000)
 └─ Test grip on soft object to verify cutoff
 
 Servo Angle Tuning:
-├─ Adjust MAX_TP (thumb & pinky angle) for comfort
-├─ Adjust MAX_OTHERS (index, middle, ring finger angle) for dexterity
+├─ Adjust MAX_TP (thumb & pinky angle)
+├─ Adjust MAX_OTHERS (index, middle, ring finger angle)
 └─ Test all gestures for smooth motion
 ```
 
@@ -592,7 +572,7 @@ Servo Angle Tuning:
 ### **Voice Control (via Alexa/Google Assistant)**
 
 ```
-1. Say "Hey Google, turn on Prosthetic Hand" or "Hey Google, set hand to Peace mode"
+1. Say "Hey Google, turn on Prosthetic Hand" or "Hey Google, set prosthetic hand to peace"
 2. SinricPro processes command and sends to ESP32
 3. Hand executes the gesture smoothly
 4. Stays in gesture until new command or EMG override
@@ -601,27 +581,22 @@ Supported Hey Google Commands:
 
 Functional Gestures:
 ├─ "Hey Google, turn on Prosthetic Hand" or "Grab" or "Close"  → Full grip
-├─ "Hey Google, set mode to Hook"                   → Hook grip (all fingers except thumb)
-├─ "Hey Google, set mode to Pinch"                  → Precision pinch (thumb + index/middle)
-├─ "Hey Google, set mode to Tripod"                 → Tripod grip (3 fingers)
+├─ "Hey Google, set mode to Hook"                   → Hook grip (all fingers curled except thumb)
+└─ "Hey Google, set mode to Grab"                   → Grab the object (All fingers closed)
 
 Social Gestures:
-├─ "Hey Google, turn on Open" or "Five" or "Paper"  → All fingers extended
-├─ "Hey Google, set mode to Point" or "One"         → Index finger pointing
-├─ "Hey Google, set mode to Peace" or "Two"         → Peace sign (index + middle)
+├─ "Hey Google, turn on Open"                       → All fingers extended
+├─ "Hey Google, set mode to Point"                  → Index finger pointing
+├─ "Hey Google, set mode to Two"                    → Peace sign (index + middle)
 ├─ "Hey Google, set mode to Three"                  → Three fingers up
 ├─ "Hey Google, set mode to Four"                   → Four fingers up
-├─ "Hey Google, set mode to Thumbs Up" or "Like"    → Thumbs up gesture
+├─ "Hey Google, set mode to Thumbs Up"              → Thumbs up gesture
 ├─ "Hey Google, set mode to OK"                     → OK sign (thumb + index circle)
-├─ "Hey Google, set mode to Love"                   → ILY sign (index + pinky)
+├─ "Hey Google, set mode to Love"                   → there's no love, forget her bro
 ├─ "Hey Google, set mode to Gun"                    → Finger gun
-├─ "Hey Google, set mode to Rock and Roll"          → Rock hand sign
 ├─ "Hey Google, set mode to Call"                   → Call me gesture
-├─ "Hey Google, set mode to Pinky"                  → Pinky promise
-
-Animations:
-├─ "Hey Google, set mode to I Love You"             → I-L-Y animation sequence
-└─ "Hey Google, set mode to Rock Paper Scissors"    → Random RPS choice
+├─ "Hey Google, set mode to Fuck Off"               → no one have enemies
+└─ "Hey Google, set mode to Pinky"                  → Pinky promise
 
 Control:
 ├─ "Hey Google, turn on Hand"                       → Enable EMG control
@@ -638,8 +613,8 @@ Control:
 5. No voice required; works offline
 
 Gesture Sequence:
-├─ Open → Flex → Close (1.5s animation)
-├─ Close → Flex → Open (1.5s animation)
+├─ Open → Flex → Close
+├─ Close → Flex → Open
 └─ Debounce: 200ms (ignores multiple quick flexes)
 ```
 
@@ -647,9 +622,9 @@ Gesture Sequence:
 
 ```
 Safety is automatic via FSR sensors:
-→ If FSR detects force > 2000 units, hand opens automatically
+→ If FSR detects force > 4000 units, fingers stop automatically
 → Triggers SAFETY_STOP state
-→ All fingers open slowly to safe position
+→ All fingers will stop at their current position and will only move if the sensor detects less force or either it's an opening command.
 
 Manual Reset:
 → Send "Open" command via Hey Google
@@ -662,11 +637,11 @@ Manual Reset:
 
 ```
 Krtrimahastah/
-├── README.md                                    # Project documentation
-├── LICENSE                                      # MIT License
+├── README.md                                  # Project documentation
+├── LICENSE                                    # MIT License
 │
-├── firmware/
-│   └── src.ino            # Main ESP32 firmware (682 lines)
+├── main/
+│   └── main.ino                               # Main ESP32 firmware (682 lines)
 │
 └── hardware/
     ├── 3d-models/
