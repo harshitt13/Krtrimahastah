@@ -1,8 +1,5 @@
 # 🤖 Krtrimahastah: AI-Powered Low-Cost Prosthetic Hand
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Arduino](https://img.shields.io/badge/Platform-Arduino%20ESP32-blue)]()
-
 **Krtrimahastah** (Sanskrit for _Artificial Hand_) is an open-source, affordable, and intelligent prosthetic arm designed to bridge the gap between expensive bionic limbs and passive cosmetic devices.
 
 By leveraging 3D printing, the ESP32 microcontroller, AI integration, and affordable hobbyist components, this project delivers a fully functional, multi-modal assistive device for under **$100 USD**.
@@ -16,6 +13,7 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 - [Key Features](#-key-features)
 - [Project Overview](#-project-overview)
 - [Hardware Architecture](#-hardware-architecture)
+- [Pinout Architecture](#-pinout-architecture)
 - [System Architecture & Connection Flow](#-system-architecture--connection-flow)
 - [3D Model Components](#-3d-model-components)
 - [Wire Mapping](#-wire-mapping)
@@ -25,9 +23,10 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 - [Installation & Setup](#-installation--setup)
 - [Usage Guide](#-usage-guide)
 - [File Structure](#-file-structure)
-- [Contributing](#-contributing)
+- [Additional Resources](#-additional-resources)
 - [License](#-license)
 - [Disclaimer](#-disclaimer)
+- [Contact](#-)
 
 ---
 
@@ -103,7 +102,7 @@ A modular, 3D-printed prosthetic hand that combines:
 
 ---
 
-## 🔌 Master Pinout Reference
+## 🔌 Pinout Reference
 
 ### **ESP32 GPIO Pin Allocation**
 
