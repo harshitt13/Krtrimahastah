@@ -310,7 +310,7 @@ Printer Settings:
 
 ### **Connection Matrix: Sensors ↔ ESP32**
 
-**Detailed wiring documentation available in:** [hardware/wiring/Wire Mapping for the Development of a Low-Cost Prosthetic Hand.xlsx](hardware/wiring/Wire%20Mapping%20for%20the%20Development%20of%20a%20Low-Cost%20Prosthetic%20Hand%20%281%29.xlsx)
+**Detailed wiring documentation available in:** [Wire Mapping](hardware/wiring/Wire%20Mapping%20for%20the%20Development%20of%20a%20Low-Cost%20Prosthetic%20Hand%20%281%29.xlsx)
 
 ### **Quick Wire Reference (5V Servos)**
 
@@ -363,9 +363,15 @@ Alexa/Google Assistant → SinricPro Cloud → WebSocket → ESP32
 
 ## 📊 Electrical Schematic
 
-### **High-Level Block Diagram**
+### **Schematic Diagram**
 
-**Schematic file:** [hardware/schematics/Prosthetci Hand Schematic.png](hardware/schematics/Prosthetci%20Hand%20Schematic.png)
+<p align="center">
+  <a href="hardware/schematics/Prosthetci%20Hand%20Schematic.png">
+    <img src="hardware/schematics/Prosthetci%20Hand%20Schematic.png" width="700">
+  </a>
+</p>
+
+### **Power Distribution**
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
