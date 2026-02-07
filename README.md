@@ -438,7 +438,7 @@ EMG Signal → Threshold Detection → Debounce (200ms)
 
 - **Activation:** Voice command via Alexa or Google Assistant
 - **Processing Pipeline:**
-  1. User speaks to Google Assistant: "Hey Google, turn on Prosthetic Hand" or "Hey Google, set hand to Peace mode"
+  1. User speaks to Google Assistant: "Hey Google, turn on Prosthetic Hand" or "Hey Google, set prosthetic hand to Peace"
   2. SinricPro cloud processes command via WebSocket
   3. ESP32 receives gesture mode string (e.g., "fist", "peace", "point")
   4. Execute corresponding servo movement pattern
@@ -579,23 +579,23 @@ Servo Angle Tuning:
 Supported Hey Google Commands:
 
 Functional Gestures:
-├─ "Hey Google, turn on Prosthetic Hand" or "Grab" or "Close"  → Full grip
-├─ "Hey Google, set mode to Hook"                   → Hook grip (all fingers curled except thumb)
-└─ "Hey Google, set mode to Grab"                   → Grab the object (All fingers closed)
+├─ "Hey Google, turn on/off Prosthetic Hand"                   → ON/OFF Prosthetic Hand
+├─ "Hey Google, set prosthetic hand to Hook"                   → Hook grip (all fingers curled except thumb)
+└─ "Hey Google, set prosthetic hand to Grab"                   → Grab the object (All fingers closed)
 
 Social Gestures:
-├─ "Hey Google, turn on Open"                       → All fingers extended
-├─ "Hey Google, set mode to Point"                  → Index finger pointing
-├─ "Hey Google, set mode to Two"                    → Peace sign (index + middle)
-├─ "Hey Google, set mode to Three"                  → Three fingers up
-├─ "Hey Google, set mode to Four"                   → Four fingers up
-├─ "Hey Google, set mode to Thumbs Up"              → Thumbs up gesture
-├─ "Hey Google, set mode to OK"                     → OK sign (thumb + index circle)
-├─ "Hey Google, set mode to Love"                   → there's no love, forget her bro
-├─ "Hey Google, set mode to Gun"                    → Finger gun
-├─ "Hey Google, set mode to Call"                   → Call me gesture
-├─ "Hey Google, set mode to Fuck Off"               → no one have enemies
-└─ "Hey Google, set mode to Pinky"                  → Pinky promise
+├─ "Hey Google, set prosthetic hand to Open"                   → All fingers extended
+├─ "Hey Google, set prosthetic hand to Point"                  → Index finger pointing
+├─ "Hey Google, set prosthetic hand to Two"                    → Peace sign (index + middle)
+├─ "Hey Google, set prosthetic hand to Three"                  → Three fingers up
+├─ "Hey Google, set prosthetic hand to Four"                   → Four fingers up
+├─ "Hey Google, set prosthetic hand to Thumbs Up"              → Thumbs up gesture
+├─ "Hey Google, set prosthetic hand to OK"                     → OK sign (thumb + index circle)
+├─ "Hey Google, set prosthetic hand to Love"                   → there's no love, forget her bro
+├─ "Hey Google, set prosthetic hand to Gun"                    → Finger gun
+├─ "Hey Google, set prosthetic hand to Call"                   → Call me gesture
+├─ "Hey Google, set prosthetic hand to Fuck Off"               → no one have enemies
+└─ "Hey Google, set prosthetic hand to Pinky"                  → Pinky promise
 
 Control:
 ├─ "Hey Google, turn on Hand"                       → Enable EMG control
