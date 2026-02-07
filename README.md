@@ -384,13 +384,14 @@ Alexa/Google Assistant → SinricPro Cloud → WebSocket → ESP32
 │  │                         ├─► MG90s Servo 2 (GPIO 12)           │
 │  │                         ├─► MG90s Servo 3 (GPIO 14)           │
 │  │                         ├─► MG90s Servo 4 (GPIO 27)           │
-│  │                         └─► MG90s Servo 5 (GPIO 26)           │
+│  │                         ├─► MG90s Servo 5 (GPIO 26)           │
+│  │                         └─► EMG Sensor V3.0 (GPIO 34)         │
 │  │                                                               │
 │  └─ USB Port 2 (3.3V, 1A) ──► LOGIC POWER RAIL (3.3V via ESP32)  │
-│                              ├─ ESP32 DevKit (Voltage Regulator) │
-│                              │  ├─ Wi-Fi Module (SinricPro)      │
-│                              │  ├─ EMG Sensor V3.0               │
-│                              │  └─ FSR402 Sensors (×2)           │
+│                              └─ ESP32 DevKit                     │
+│                                 ├─ Wi-Fi Module (SinricPro)      │
+│                                 ├─ EMG Sensor V3.0               │
+│                                 └─ FSR402 Sensors (GPIO 36, 39)  │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
