@@ -486,14 +486,39 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
 
 1. Create a free account at [https://sinric.pro](https://sinric.pro)
 2. Create a new **Device Template** → Select "Speaker" device type
+  <p align="center">
+   <a href="public/add template.png">
+      <img src="public/add template.png" width="700">
+    </a>
+  </p>
 3. Add two capabilities: "Power" & "Mode". Configure "Mode" Capability
+  <p align="center">
+   <a href="public/capabilities.png">
+      <img src="public/capabilities.png" width="700">
+    </a>
+  </p>
    - Set "Instance Id" & "Mode Name" as shown in the photo
+     <p align="center">
+      <a href="public/mode_config.png">
+        <img src="public/mode_config.png" width="700">
+      </a>
+    </p>
    - Save the template 
 4. Create a new **Device** → Select "Krtrimahastah_Template" device type 
+  <p align="center">
+   <a href="public/add device.png">
+      <img src="public/add device.png" width="700">
+    </a>
+  </p>
 5. Note your credentials:
    - **APP_KEY** - Found in "Credentials" section
    - **APP_SECRET** - Found in "Credentials" section
    - **DEVICE_ID** - Found in your device settings
+     <p align="center">
+      <a href="public/keys.png">
+        <img src="public/keys.png" width="700">
+      </a>
+    </p>
 6. Link SinricPro to **Amazon Alexa** or **Google Home**:
    - Open Alexa/Google Home app
    - Search for "SinricPro" skill and enable
