@@ -1,4 +1,4 @@
-# 🤖 Krtrimahastah: AI-Powered Low-Cost Prosthetic Hand
+# Krtrimahastah: AI-Powered Low-Cost Prosthetic Hand
 
 **Krtrimahastah** (Sanskrit for _Artificial Hand_) is an open-source, affordable, and intelligent prosthetic arm designed to bridge the gap between expensive bionic limbs and passive cosmetic devices.
 
@@ -8,12 +8,12 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Key Features](#-key-features)
 - [Project Overview](#-project-overview)
 - [Hardware Architecture](#-hardware-architecture)
-- [Pinout Architecture](#-pinout-architecture)
+- [Pinout Reference](#-pinout-reference)
 - [System Architecture & Connection Flow](#-system-architecture--connection-flow)
 - [3D Model Components](#-3d-model-components)
 - [Wire Mapping](#-wire-mapping)
@@ -23,41 +23,41 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 - [Installation & Setup](#-installation--setup)
 - [Usage Guide](#-usage-guide)
 - [File Structure](#-file-structure)
-- [Additional Resources](#-additional-resources)
+- [Learning Resources](#-learning-resources)
 - [License](#-license)
-- [Disclaimer](#-disclaimer)
-- [Contact](#-)
+- [Disclaimer & Safety Notice](#-disclaimer--safety-notice)
+- [Contact & Support](#--contact--support)
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
-### 🎯 **Multi-Modal Control System**
+### **Multi-Modal Control System**
 
 - **Voice Commands (Primary):** Integrated with SinricPro IoT platform for voice control via Alexa/Google Assistant
 - **EMG Muscle Signals (Secondary):** Backup EMG-based control for silent/offline operation with binary toggle (Open ↔ Close)
 - **Smart Home Integration:** Connect to Amazon Alexa or Google Home for hands-free gesture commands
 
-### 🧠 **Intelligent Hardware**
+### **Intelligent Hardware**
 
 - **Tendon-Driven Actuation:** Bio-inspired mechanical design with 5 independent MG90s servos for anthropomorphic finger movement
 - **Haptic Feedback System:** Force Sensitive Resistors (FSRs) in fingertips enable closed-loop grip control, preventing crushing of delicate objects
 - **Haptic Force Sensing:** Real-time pressure monitoring (max grip force: 2000 units with safety cutoff)
 
-### ⚡ **Power Management Innovation**
+### **Power Management Innovation**
 
 - **All-Day Portability:** Power bank with optimized power splitting:
   - **High-Power Rail:** 5V for servo actuation (high current spikes)
   - **Logic Rail:** 3.3V via ESP32 regulator (low current, noise-isolated)
 
-### 💰 **Cost-Effective Engineering**
+### **Cost-Effective Engineering**
 
 - Built entirely with off-the-shelf hobbyist components
 - FDM 3D printing for structural parts (PLA material)
 - Total BOM cost under $100 USD
 - Open-source firmware for transparency and community contribution
 
-### 🔒 **Safety Features**
+### **Safety Features**
 
 - Pressure/tactile feedback prevents over-gripping
 - Software watchdog timer (10-second timeout)
@@ -67,7 +67,7 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 ### **Problem Statement**
 
@@ -84,7 +84,7 @@ A modular, 3D-printed prosthetic hand that combines:
 
 ---
 
-## ⚙️ Hardware Architecture
+## Hardware Architecture
 
 ### **Bill of Materials (BOM)**
 
@@ -102,7 +102,7 @@ A modular, 3D-printed prosthetic hand that combines:
 
 ---
 
-## 🔌 Pinout Reference
+## Pinout Reference
 
 ### **ESP32 GPIO Pin Allocation**
 
@@ -129,7 +129,7 @@ A modular, 3D-printed prosthetic hand that combines:
 
 ---
 
-## 🏗️ System Architecture & Connection Flow
+## System Architecture & Connection Flow
 
 ### **Overall System Architecture**
 
@@ -259,7 +259,7 @@ graph LR
 
 ---
 
-## 🖐️ 3D Model Components
+## 3D Model Components
 
 ### **Hand Assembly Structure**
 
@@ -306,7 +306,7 @@ Printer Settings:
 
 ---
 
-## 🔗 Wire Mapping
+## Wire Mapping
 
 ### **Connection Matrix: Sensors ↔ ESP32**
 
@@ -361,7 +361,7 @@ Alexa/Google Assistant → SinricPro Cloud → WebSocket → ESP32
 
 ---
 
-## 📊 Electrical Schematic
+## Electrical Schematic
 
 ### **Schematic Diagram**
 
@@ -425,7 +425,7 @@ Alexa/Google Assistant → SinricPro Cloud → WebSocket → ESP32
 
 ---
 
-## ⚙️ Control Logic
+## Control Logic
 
 ### **Operating Modes**
 
@@ -461,7 +461,7 @@ EMG Signal → Threshold Detection → Debounce (200ms)
 
 ---
 
-## 💻 Software Setup
+## Software Setup
 
 ### **Prerequisites**
 
@@ -485,20 +485,24 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
 ### **SinricPro Setup**
 
 1. Create a free account at [https://sinric.pro](https://sinric.pro)
-2. Create a new **Smart Home Device** → Select "Custom" type
-3. Note your credentials:
+2. Create a new **Device Template** → Select "Speaker" device type
+3. Add two capabilities: "Power" & "Mode". Configure "Mode" Capability
+   - Set "Instance Id" & "Mode Name" as shown in the photo
+   - Save the template 
+4. Create a new **Device** → Select "Krtrimahastah_Template" device type 
+5. Note your credentials:
    - **APP_KEY** - Found in "Credentials" section
    - **APP_SECRET** - Found in "Credentials" section
    - **DEVICE_ID** - Found in your device settings
-4. Link SinricPro to **Amazon Alexa** or **Google Home**:
+6. Link SinricPro to **Amazon Alexa** or **Google Home**:
    - Open Alexa/Google Home app
    - Search for "SinricPro" skill and enable
    - Discover devices
-5. Add credentials to firmware configuration
+7. Add credentials to firmware configuration
 
 ---
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 ### **Step 1: Prepare Hardware**
 
@@ -573,7 +577,7 @@ Servo Angle Tuning:
 
 ---
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### **Voice Control (via Alexa/Google Assistant)**
 
@@ -639,7 +643,7 @@ Manual Reset:
 
 ---
 
-## 📁 File Structure
+## File Structure
 
 ```
 Krtrimahastah/
@@ -673,7 +677,7 @@ Krtrimahastah/
 
 ---
 
-## 🎓 Learning Resources
+## Learning Resources
 
 - **ESP32 Documentation:** [https://docs.espressif.com/projects/esp-idf/](https://docs.espressif.com/projects/esp-idf/)
 - **SinricPro Documentation:** [https://sinricpro.github.io/esp8266-esp32-sdk/](https://sinricpro.github.io/esp8266-esp32-sdk/)
@@ -682,7 +686,7 @@ Krtrimahastah/
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
@@ -710,7 +714,7 @@ The author and contributors assume **NO LIABILITY** for injuries, property damag
 
 ---
 
-## 📞 Contact & Support
+## Contact & Support
 
 - **GitHub Issues:** [Report bugs or request features](https://github.com/harshitt13/Krtrimahastah/issues)
 - **Email:** find.harshitkushwaha@gmail.com
