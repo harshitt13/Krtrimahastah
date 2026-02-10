@@ -86,8 +86,6 @@ A modular, 3D-printed prosthetic hand that combines:
 
 ## Hardware Architecture
 
-### **Bill of Materials (BOM)**
-
 | Component                     | Quantity | Function                                               |
 | :---------------------------- | :------: | :----------------------------------------------------- |
 | **ESP32 DevKit V1**           |    1     | Main microcontroller (32-bit dual-core, Wi-Fi/BLE)     |
@@ -95,10 +93,11 @@ A modular, 3D-printed prosthetic hand that combines:
 | **SinricPro Account**         |    1     | IoT cloud service for voice control integration        |
 | **EMG Sensor Module V3.0**    |    1     | Muscle signal acquisition (3-channel, 10-bit ADC)      |
 | **FSR402 Pressure Sensor**    |    2     | Tactile feedback in thumb & index finger               |
-| **Breadboard & Jumper Wires** |    —     | Prototyping & connections                              |
+| **10K Ohm Resistors**         |    2     | Volatge Divider for FSR Sensor                         |
 | **3D Printed Parts**          |    —     | PLA chassis (hand, phalanges, forearm cover)           |
 | **Servo Horns & Hardware**    |    —     | Servo linkages & fasteners                             |
 | **USB-C Cable & Connectors**  |    —     | Power delivery & debugging                             |
+| **Breadboard & Jumper Wires** |    —     | Prototyping & connections                              |
 
 ---
 
@@ -263,7 +262,7 @@ graph LR
 
 ### **Hand Assembly Structure**
 
-![Hand Layout Reference](hardware/3d-models/Hand%20Layout.stl)
+[Hand Layout Reference (STL)](hardware/3d-models/Hand%20Layout.stl)
 _Reference: Complete hand assembly layout showing all finger components and palm structure_
 
 The prosthetic hand consists of **8 3D-printed parts** designed for FDM printing (PLA material):
@@ -493,7 +492,6 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
 3. Add two capabilities: "Power" & "Mode". Configure "Mode" Capability
 
    ![Capabilities configuration](public/capabilities.png)
-
    - Set "Instance Id" & "Mode Name" as shown in the photo
 
      ![Mode configuration](public/mode_config.png)
@@ -505,7 +503,6 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
    ![Add device](public/add%20device.png)
 
 5. Note your credentials:
-
    - **APP_KEY** - Found in "Credentials" section
    - **APP_SECRET** - Found in "Credentials" section
    - **DEVICE_ID** - Found in your device settings
@@ -513,7 +510,6 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
      ![API Keys](public/keys.png)
 
 6. Link SinricPro to **Amazon Alexa** or **Google Home**:
-
    - Open Alexa/Google Home app
    - Search for "SinricPro" skill and enable
    - Discover devices
@@ -667,31 +663,28 @@ Manual Reset:
 
 ```
 Krtrimahastah/
+├── .dist/                                     # Build output (if present)
 ├── README.md                                  # Project documentation
 ├── LICENSE                                    # MIT License
-│
 ├── main/
 │   └── main.ino                               # Main ESP32 firmware (682 lines)
-│
+├── public/                                    # Static assets (if present)
 └── hardware/
-    ├── 3d-models/
-    │   ├── Hand Layout.stl                     # Full assembly reference
-    │   ├── Hand.stl                            # Palm structure
-    │   ├── Finger_Thumb.stl                    # Thumb digit
-    │   ├── Finger_Index.stl                    # Index finger
-    │   ├── Finger_Middle.stl                   # Middle finger
-    │   ├── Finger_Ring.stl                     # Ring finger
-    │   ├── Finger_Pinky.stl                    # Pinky finger
-    │   ├── Arm_Cover.stl                       # Forearm enclosure
-    │   ├── Hand_print_layout.stl               # Print nesting guide
-    │   └── Right_Hand.stl                      # Mirror version
-    │
-    ├── schematics/
-    │   └── Prosthetci Hand Schematic.png       # Circuit diagram
-    │
-    └── wiring/
-        └── Wire Mapping for the Development of a Low-Cost Prosthetic Hand.xlsx
-            # Detailed pinout & connection matrix
+  ├── 3d-models/
+  │   ├── Hand Layout.stl                     # Full assembly reference
+  │   ├── Hand.stl                            # Palm structure
+  │   ├── Finger_Thumb.stl                    # Thumb digit
+  │   ├── Finger_Index.stl                    # Index finger
+  │   ├── Finger_Middle.stl                   # Middle finger
+  │   ├── Finger_Ring.stl                     # Ring finger
+  │   ├── Finger_Pinky.stl                    # Pinky finger
+  │   ├── Arm_Cover.stl                       # Forearm enclosure
+  │   ├── Hand_print_layout.stl               # Print nesting guide
+  │   └── Right_Hand.stl                      # Mirror version
+  ├── schematics/
+  │   └── Prosthetci Hand Schematic.png       # Circuit diagram
+  └── wiring/
+    └── Wire Mapping for the Development of a Low-Cost Prosthetic Hand.xlsx # Detailed pinout & connection matrix
 
 ```
 
