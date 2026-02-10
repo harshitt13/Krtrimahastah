@@ -268,16 +268,16 @@ _Reference: Complete hand assembly layout showing all finger components and palm
 
 The prosthetic hand consists of **8 3D-printed parts** designed for FDM printing (PLA material):
 
-| Component           | File Name               | Material  |
-| :------------------ | :---------------------- | :-------: |
-| **Palm/Metacarpal** | `Hand.stl`              |    PLA    |
-| **Thumb Digit**     | `Finger_Thumb.stl`      |    PLA    |
-| **Index Finger**    | `Finger_Index.stl`      |    PLA    |
-| **Middle Finger**   | `Finger_Middle.stl`     |    PLA    |
-| **Ring Finger**     | `Finger_Ring.stl`       |    PLA    |
-| **Pinky Finger**    | `Finger_Pinky.stl`      |    PLA    |
-| **Arm Cover**       | `Arm_Cover.stl`         |    PLA    |
-| **Right Hand**      | `Right_Hand.stl`        |    PLA    |
+| Component           | File Name           | Material |
+| :------------------ | :------------------ | :------: |
+| **Palm/Metacarpal** | `Hand.stl`          |   PLA    |
+| **Thumb Digit**     | `Finger_Thumb.stl`  |   PLA    |
+| **Index Finger**    | `Finger_Index.stl`  |   PLA    |
+| **Middle Finger**   | `Finger_Middle.stl` |   PLA    |
+| **Ring Finger**     | `Finger_Ring.stl`   |   PLA    |
+| **Pinky Finger**    | `Finger_Pinky.stl`  |   PLA    |
+| **Arm Cover**       | `Arm_Cover.stl`     |   PLA    |
+| **Right Hand**      | `Right_Hand.stl`    |   PLA    |
 
 ### **3D Printing Recommendations**
 
@@ -297,7 +297,7 @@ Printer Settings:
 
 1. Print all components with support structures
 2. Remove supports carefully (palm/finger joints are delicate)
-3. Assemble fingers and attch to plam pivto points using 0.5mm fishing wire (for retarcking) and 2mm elastic string (for flexibility) 
+3. Assemble fingers and attch to plam pivto points using 0.5mm fishing wire (for retarcking) and 2mm elastic string (for flexibility)
 4. Use super glue attach servos in palm housing
 5. Connect servo horns to finger linkages via fishing wire
 6. Mount arm cover shell with servo motor peeking through rear cavity
@@ -485,44 +485,39 @@ Install via Arduino Library Manager (`Sketch → Include Library → Manage Libr
 ### **SinricPro Setup**
 
 1. Create a free account at [https://sinric.pro](https://sinric.pro)
+
 2. Create a new **Device Template** → Select "Speaker" device type
-  <p align="center">
-   <a href="public/add template.png">
-      <img src="public/add template.png" width="700">
-    </a>
-  </p>
+
+   ![Add template device](public/add%20template.png)
+
 3. Add two capabilities: "Power" & "Mode". Configure "Mode" Capability
-  <p align="center">
-   <a href="public/capabilities.png">
-      <img src="public/capabilities.png" width="700">
-    </a>
-  </p>
+
+   ![Capabilities configuration](public/capabilities.png)
+
    - Set "Instance Id" & "Mode Name" as shown in the photo
-     <p align="center">
-      <a href="public/mode_config.png">
-        <img src="public/mode_config.png" width="700">
-      </a>
-    </p>
-   - Save the template 
-4. Create a new **Device** → Select "Krtrimahastah_Template" device type 
-  <p align="center">
-   <a href="public/add device.png">
-      <img src="public/add device.png" width="700">
-    </a>
-  </p>
+
+     ![Mode configuration](public/mode_config.png)
+
+   - Save the template
+
+4. Create a new **Device** → Select "Krtrimahastah_Template" device type
+
+   ![Add device](public/add%20device.png)
+
 5. Note your credentials:
+
    - **APP_KEY** - Found in "Credentials" section
    - **APP_SECRET** - Found in "Credentials" section
    - **DEVICE_ID** - Found in your device settings
-     <p align="center">
-      <a href="public/keys.png">
-        <img src="public/keys.png" width="700">
-      </a>
-    </p>
+
+     ![API Keys](public/keys.png)
+
 6. Link SinricPro to **Amazon Alexa** or **Google Home**:
+
    - Open Alexa/Google Home app
    - Search for "SinricPro" skill and enable
    - Discover devices
+
 7. Add credentials to firmware configuration
 
 ---
