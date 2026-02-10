@@ -13,7 +13,7 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 - [Key Features](#-key-features)
 - [Project Overview](#-project-overview)
 - [Hardware Architecture](#-hardware-architecture)
-- [Pinout Architecture](#-pinout-architecture)
+- [Pinout Reference](#-pinout-reference)
 - [System Architecture & Connection Flow](#-system-architecture--connection-flow)
 - [3D Model Components](#-3d-model-components)
 - [Wire Mapping](#-wire-mapping)
@@ -23,10 +23,10 @@ By leveraging 3D printing, the ESP32 microcontroller, AI integration, and afford
 - [Installation & Setup](#-installation--setup)
 - [Usage Guide](#-usage-guide)
 - [File Structure](#-file-structure)
-- [Additional Resources](#-additional-resources)
+- [Learning Resources](#-learning-resources)
 - [License](#-license)
-- [Disclaimer](#-disclaimer)
-- [Contact](#-)
+- [Disclaimer & Safety Notice](#-disclaimer--safety-notice)
+- [Contact & Support](#--contact--support)
 
 ---
 
