@@ -4,29 +4,29 @@
 
 By leveraging 3D printing, the ESP32 microcontroller, AI integration, and affordable hobbyist components, this project delivers a fully functional, multi-modal assistive device for under **$100 USD**.
 
-🎥 **[Project Demo Video](https://youtu.be/BNZyQIecj14)**
+Watch the video on YouTube: [https://youtu.be/BNZyQIecj14](https://youtu.be/BNZyQIecj14)
 
 ---
 
 ## Table of Contents
 
-- [Key Features](#-key-features)
-- [Project Overview](#-project-overview)
-- [Hardware Architecture](#-hardware-architecture)
-- [Pinout Reference](#-pinout-reference)
-- [System Architecture & Connection Flow](#-system-architecture--connection-flow)
-- [3D Model Components](#-3d-model-components)
-- [Wire Mapping](#-wire-mapping)
-- [Electrical Schematic](#-electrical-schematic)
-- [Control Logic](#-control-logic)
-- [Software Setup](#-software-setup)
-- [Installation & Setup](#-installation--setup)
-- [Usage Guide](#-usage-guide)
-- [File Structure](#-file-structure)
-- [Learning Resources](#-learning-resources)
-- [License](#-license)
-- [Disclaimer & Safety Notice](#-disclaimer--safety-notice)
-- [Contact & Support](#--contact--support)
+- [Key Features](#key-features)
+- [Project Overview](#project-overview)
+- [Hardware Architecture](#hardware-architecture)
+- [Pinout Reference](#pinout-reference)
+- [System Architecture & Connection Flow](#system-architecture--connection-flow)
+- [3D Model Components](#3d-model-components)
+- [Wire Mapping](#wire-mapping)
+- [Electrical Schematic](#electrical-schematic)
+- [Control Logic](#control-logic)
+- [Software Setup](#software-setup)
+- [Installation & Setup](#installation--setup)
+- [Usage Guide](#usage-guide)
+- [File Structure](#file-structure)
+- [Learning Resources](#learning-resources)
+- [License](#license)
+- [Disclaimer & Safety Notice](#%EF%B8%8F-disclaimer--safety-notice)
+- [Contact & Support](#contact--support)
 
 ---
 
