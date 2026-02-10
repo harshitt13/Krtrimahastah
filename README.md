@@ -625,8 +625,8 @@ Social Gestures:
 └─ "Hey Google, set prosthetic hand to Pinky"                  → Pinky promise
 
 Control:
-├─ "Hey Google, turn on Hand"                       → Enable EMG control
-└─ "Hey Google, turn off Hand"                      → Disable EMG control
+├─ "Hey Google, turn on Hand"                                  → Enable EMG control
+└─ "Hey Google, turn off Hand"                                 → Disable EMG control
 ```
 
 ### **EMG Control**
