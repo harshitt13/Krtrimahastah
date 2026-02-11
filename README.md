@@ -4,7 +4,7 @@
 
 By leveraging 3D printing, the ESP32 microcontroller, AI integration, and affordable hobbyist components, this project delivers a fully functional, multi-modal assistive device for under **$100 USD**.
 
-Watch the video on YouTube: [https://youtu.be/BNZyQIecj14](https://youtu.be/Tq0eUJswGTI)
+Watch the video on YouTube: [https://youtu.be/Tq0eUJswGTI](https://youtu.be/Tq0eUJswGTI)
 
 Watch the demonstration video on YouTube: [https://youtu.be/BNZyQIecj14](https://youtu.be/BNZyQIecj14)
 
