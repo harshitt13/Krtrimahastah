@@ -1,16 +1,11 @@
 # Krtrimahastah: AI-Powered Low-Cost Prosthetic Hand with intuitive multi-modal control and force feedback
 
-<video src="public/Krtrimahastah_A_Hand_for_Everyone.mp4" controls width="800">
-  Your browser does not support the video tag. Watch it here: https://youtu.be/Tq0eUJswGTI
-</video>
-
----
-
 **Krtrimahastah** (Sanskrit for _Artificial Hand_) is an open-source, affordable, and intelligent prosthetic arm designed to bridge the gap between expensive bionic limbs and passive cosmetic devices.
 
 By leveraging 3D printing, the ESP32 microcontroller, AI integration, and affordable hobbyist components, this project delivers a fully functional, multi-modal assistive device for under **$100 USD**.
 
-Watch the video on YouTube: [https://youtu.be/BNZyQIecj14](https://youtu.be/BNZyQIecj14)
+Watch the video on YouTube: [https://youtu.be/BNZyQIecj14](https://youtu.be/Tq0eUJswGTI)
+Watch the demonstration video on YouTube: [https://youtu.be/BNZyQIecj14](https://youtu.be/BNZyQIecj14)
 
 ---
 
